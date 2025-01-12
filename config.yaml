@@ -1,6 +1,6 @@
 name: "Voyanti Victron Addon"
 description: "Voyanti Victron Addon"
-version: "0.1.7"
+version: "0.1.8"
 slug: "victron"
 url: "https://github.com/octoco-ltd/voyanti-ha-victron"
 init: false
@@ -18,7 +18,6 @@ boot: auto
 
 options:
   inverter_model: "Quattro 48/10000"
-  ha_inverter_prefix: "vic"
   ha_mqtt_host: "localhost"
   ha_mqtt_port: 1883
   ha_mqtt_user: "mqtt"
@@ -27,7 +26,6 @@ options:
   cerbo_mqtt_port: 1883
   cerbo_serial_no: "1234567890"
 schema:
-  ha_inverter_prefix: str
   inverter_model: str
   ha_mqtt_host: str
   ha_mqtt_port: int

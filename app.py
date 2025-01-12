@@ -153,7 +153,7 @@ def ha_discovery():
     device = {
         "manufacturer": "Victron",
         "model": INVERTER_MODEL,
-        "identifiers": [f"{HA_PREFIX}_victron_{CERBO_SERIAL_NO}"],
+        "identifiers": [f"victron_{CERBO_SERIAL_NO}"],
         "name": f"Victron {CERBO_SERIAL_NO}"
     }
 
