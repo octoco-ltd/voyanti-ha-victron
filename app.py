@@ -73,6 +73,15 @@ def ha_on_message(client, userdata, msg):
     pass
     # Pass message on to Cerbo if its on a certain topic
     # 
+    
+# Initialize HA MQTT client
+ha_mqtt_client = mqtt.Client()
+ha_mqtt_client.on_connect = ha_on_connect
+ha_mqtt_client.on_disconnect = ha_on_disconnect
+ha_mqtt_client.on_message = ha_on_message
+ha_mqtt_client.username_pw_set(username=HA_MQTT_USER, password=HA_MQTT_PASSWORD)
+ha_mqtt_client.connect(HA_MQTT_BROKER, HA_MQTT_PORT, 60)
+ha_mqtt_client.loop_start()
 
 def cerbo_on_connect(client, userdata, flags, rc):
     logging.info("Connected to Cerbo MQTT broker")
@@ -90,6 +99,7 @@ def cerbo_on_disconnect(client, userdata, rc):
 
 def cerbo_on_message(client, userdata, msg):
     global ha_mqtt_connected
+    global ha_mqtt_client
     if ha_mqtt_connected == True:
         # Get the topic and payload
         topic = msg.topic
@@ -118,15 +128,6 @@ def cerbo_on_message(client, userdata, msg):
             # print(f"Topic {topic_suffix} not found in READ_PARAMETER_MAP")
     else:
         print("MQTT not connected ... ")
-
-# Initialize HA MQTT client
-ha_mqtt_client = mqtt.Client()
-ha_mqtt_client.on_connect = ha_on_connect
-ha_mqtt_client.on_disconnect = ha_on_disconnect
-ha_mqtt_client.on_message = ha_on_message
-ha_mqtt_client.username_pw_set(username=HA_MQTT_USER, password=HA_MQTT_PASSWORD)
-ha_mqtt_client.connect(HA_MQTT_BROKER, HA_MQTT_PORT, 60)
-ha_mqtt_client.loop_start()
 
 # Initialize HA MQTT client
 cerbo_mqtt_client = mqtt.Client()
