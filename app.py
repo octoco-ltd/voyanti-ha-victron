@@ -115,7 +115,7 @@ def cerbo_on_message(client, userdata, msg):
                 # Found a match, construct Home Assistant topic and payload
                 ha_topic = f"{HA_MQTT_BASE_TOPIC}/{CERBO_SERIAL_NO}/{param.replace(' ', '_').lower()}"
                 payload_json = json.loads(payload)
-                ha_payload = payload_json["value"]
+                ha_payload = round(payload_json["value"], 2)
                 # Publish to the Home Assistant topic
                 ha_mqtt_client.publish(ha_topic, ha_payload, retain=False)
                 print(f"Published to {ha_topic}: {ha_payload}")
