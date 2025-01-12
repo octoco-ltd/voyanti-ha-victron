@@ -1,0 +1,39 @@
+name: "Voyanti Victron Addon"
+description: "Voyanti Victron Addon"
+version: "0.0.1"
+slug: "victron"
+url: "https://github.com/octoco-ltd/voyanti-ha-victron"
+init: false
+arch:
+  - aarch64
+  - amd64
+  - armhf
+  - armv7
+  - i386
+
+uart: true
+usb: true
+startup: system
+boot: auto
+
+options:
+  ha_mqtt_host: "localhost"
+  ha_mqtt_port: 1883
+  ha_mqtt_user: "mqtt"
+  ha_mqtt_password: "yourmqttpassword"
+  cerbo_mqtt_host: "victron.local"
+  cerbo_mqtt_port: 1883
+  cerbo_mqtt_user: "cerbousername"
+  cerbo_mqtt_password: "cerbopassword"
+  cerbo_serial_no: "1234567890"
+schema:
+  ha_mqtt_host: str
+  ha_mqtt_port: int
+  ha_mqtt_user: str
+  ha_mqtt_password: str
+  cerbo_mqtt_host: str
+  cerbo_mqtt_port: int
+  cerbo_mqtt_user: str
+  cerbo_mqtt_password: str
+  cerbo_serial_no: str
+      
