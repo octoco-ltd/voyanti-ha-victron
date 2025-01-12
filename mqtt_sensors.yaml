@@ -20,32 +20,9 @@ number:
       name: "Cerbo GX"
 
 sensor:
-  - state_topic: "victron-home/N/c0847d9b49b3/grid/30/Ac/Energy/Forward"
-    name: "Grid energy meter import"
-    device_class: energy
-    state_class: total_increasing
-    value_template: '{{ value_json.value|float(0)|round(0) }}'
-    unit_of_measurement: "kWh"
-    unique_id: "grid_meter_import"
-    device: &grid_meter_device
-      identifiers:
-        - "Victron Grid Meter"
-      manufacturer: "Victron Energy"
-      model: "ET340"
-      name: "Victron Grid Meter"
-
-  - state_topic: "victron-home/N/c0847d9b49b3/grid/30/Ac/Energy/Reverse"
-    name: "Grid energy meter export"
-    device_class: energy
-    state_class: total_increasing
-    value_template: '{{ value_json.value|float(0)|round(0) }}'
-    unit_of_measurement: "kWh"
-    unique_id: "grid_meter_export"
-    device: *grid_meter_device
-
   - state_topic: "victron-home/N/c0847d9b49b3/system/0/Dc/Battery/Soc"
-    name: "Battery Percent"
-    unique_id: "victron_battery_soc"
+    name: "Battery SoC"
+    unique_id: "battery_soc"
     device_class: battery
     unit_of_measurement: "%"
     value_template: '{{ value_json.value|float(0)|round(0) }}'
@@ -60,426 +37,34 @@ sensor:
     device: *cerbo_device
 
   - state_topic: victron-home/N/c0847d9b49b3/system/0/Dc/Battery/Voltage
-    name: Battery Voltage
-    unique_id: victron_battery_voltage
+    name: BMS Battery Voltage
+    unique_id: bms_battery_voltage
     device_class: voltage
     value_template: '{{ value_json.value|float(0)|round(2) }}'
     unit_of_measurement: V
     device: *cerbo_device 
 
   - state_topic: victron-home/N/c0847d9b49b3/system/0/Dc/Battery/Power
-    name: Battery Load
-    unique_id: victron_battery_load
+    name: BMS Battery Load
+    unique_id: bms_battery_load
     device_class: power
     value_template: '{{ value_json.value|float(0)|round(0) }}'
     unit_of_measurement: W
     device: *cerbo_device 
-  
-  - state_topic: victron-home/N/c0847d9b49b3/system/0/Ac/Consumption/L1/Power
-    name: AC Loads - Phase 1
-    device_class: power
-    value_template: '{{ value_json.value|round(0)}}'
-    unit_of_measurement: W
-    icon: 'mdi:power-socket-uk'
-    unique_id: victron_acload_l1
-    device: *cerbo_device 
-
-  - state_topic: victron-home/N/c0847d9b49b3/vebus/276/Ac/Out/L1/V
-    name: AC Output Voltage - Phase 1
-    device_class: voltage
-    value_template: "{{ (value_json.value | float(default=0) | round(1)) if value_json is defined and value_json.value is not none else 0 }}"
-    unit_of_measurement: V
-    unique_id: Victron_AC_Output_Voltage_L1
-    device: &inverter_device
-      identifiers:
-        - "Victron Quattro 48/10000"
-      manufacturer: "Victron Energy"
-      model: "Quattro 48/10000"
-      name: "Victron Inverter" 
-
-  - state_topic: victron-home/N/c0847d9b49b3/vebus/276/Ac/Out/L1/I
-    name: AC Output Current - Phase 1
-    device_class: current
-    value_template: "{{ (value_json.value | float(default=0) | round(1)) if value_json is defined and value_json.value is not none else 0 }}"
-    unit_of_measurement: A
-    unique_id: Victron_AC_Output_Current_L1
-    device: *inverter_device 
-  
-  - state_topic: victron-home/N/c0847d9b49b3/system/0/Ac/Consumption/L2/Power
-    name: AC Loads - Phase 2
-    device_class: power
-    value_template: '{{ value_json.value | round(0) }}'
-    unit_of_measurement: W
-    icon: 'mdi:power-socket-uk'
-    unique_id: victron_acload_l2
-    device: *inverter_device 
-
-  - state_topic: victron-home/N/c0847d9b49b3/vebus/276/Ac/Out/L2/V
-    name: AC Output Voltage - Phase 2
-    device_class: voltage
-    value_template: "{{ (value_json.value | float(default=0) | round(1)) if value_json is defined and value_json.value is not none else 0 }}"
-    unit_of_measurement: V
-    unique_id: Victron_AC_Output_Voltage_L2
-    device: *inverter_device 
-
-  - state_topic: victron-home/N/c0847d9b49b3/vebus/276/Ac/Out/L2/I
-    name: AC Output Current - Phase 2
-    device_class: current
-    value_template: "{{ (value_json.value | float(default=0) | round(1)) if value_json is defined and value_json.value is not none else 0 }}"
-    unit_of_measurement: A
-    unique_id: Victron_AC_Output_Current_L2
-    device: *inverter_device 
-
-  - state_topic: victron-home/N/c0847d9b49b3/system/0/Ac/Consumption/L3/Power
-    name: AC Loads - Phase 3
-    device_class: power
-    value_template: '{{ value_json.value | round(0) }}'
-    unit_of_measurement: W
-    icon: 'mdi:power-socket-uk'
-    unique_id: victron_acload_l3
-    device: *cerbo_device 
-  
-  - state_topic: victron-home/N/c0847d9b49b3/vebus/276/Ac/Out/L3/V
-    name: AC Output Voltage - Phase 3
-    device_class: voltage
-    value_template: "{{ (value_json.value | float(default=0) | round(1)) if value_json is defined and value_json.value is not none else 0 }}"
-    unit_of_measurement: V
-    unique_id: Victron_AC_Output_Voltage_L3
-    device: *inverter_device 
-
-  - state_topic: victron-home/N/c0847d9b49b3/vebus/276/Ac/Out/L3/I
-    name: AC Output Current - Phase 3
-    device_class: current
-    value_template: "{{ (value_json.value | float(default=0) | round(1)) if value_json is defined and value_json.value is not none else 0 }}"
-    unit_of_measurement: A
-    unique_id: Victron_AC_Output_Current_L3
-    device: *inverter_device
-
-  - state_topic: victron-home/N/c0847d9b49b3/system/0/Ac/Grid/L1/Power
-    name: Grid Power - Phase 1
-    device_class: power
-    value_template: |-
-      {% if value_json is defined and value_json.value is not none %}
-        {{ value_json.value | round(0) }}
-      {% else %}
-        0
-      {% endif %}
-    unit_of_measurement: W
-    icon: 'mdi:power-socket-uk'
-    unique_id: Victron_Grid_L1
-    device: *cerbo_device 
-  
-  - state_topic: victron-home/N/c0847d9b49b3/system/0/Ac/Grid/L2/Power
-    name: Grid Power - Phase 2
-    device_class: power
-    value_template: |-
-      {% if value_json is defined and value_json.value is not none %}
-        {{ value_json.value | round(0) }}
-      {% else %}
-        0
-      {% endif %}
-    unit_of_measurement: W
-    icon: 'mdi:power-socket-uk'
-    unique_id: Victron_Grid_L2
-    device: *cerbo_device 
-  
-  - state_topic: victron-home/N/c0847d9b49b3/system/0/Ac/Grid/L3/Power
-    name: Grid Power - Phase 3
-    device_class: power
-    value_template: |-
-      {% if value_json is defined and value_json.value is not none %}
-        {{ value_json.value | round(0) }}
-      {% else %}
-        0
-      {% endif %}
-    unit_of_measurement: W
-    icon: 'mdi:power-socket-uk'
-    unique_id: Victron_Grid_L3
-    device: *cerbo_device 
-  
-  - state_topic: victron-home/N/c0847d9b49b3/grid/30/Ac/Power
-    name: Grid Power Total
-    device_class: power
-    value_template: "{{ (value_json.value | float(default=0) | round(1)) if value_json is defined and value_json.value is not none else 0 }}"
-    unit_of_measurement: W
-    icon: 'mdi:power-socket-uk'
-    unique_id: Victron_Grid_Power_Tot
-    device: *grid_meter_device 
-
-  - state_topic: victron-home/N/c0847d9b49b3/grid/30/Ac/L1/Voltage
-    name: Grid Voltage - Phase 1
-    device_class: voltage
-    value_template: "{{ (value_json.value | float(default=0) | round(1)) if value_json is defined and value_json.value is not none else 0 }}"
-    unit_of_measurement: V
-    unique_id: Victron_Grid_Voltage_L1
-    device: *grid_meter_device
-
-  - state_topic: victron-home/N/c0847d9b49b3/grid/30/Ac/L2/Voltage
-    name: Grid Voltage - Phase 2
-    device_class: voltage
-    value_template: "{{ (value_json.value | float(default=0) | round(1)) if value_json is defined and value_json.value is not none else 0 }}"
-    unit_of_measurement: V
-    unique_id: Victron_Grid_Voltage_L2
-    device: *grid_meter_device 
-
-  - state_topic: victron-home/N/c0847d9b49b3/grid/30/Ac/L3/Voltage
-    name: Grid Voltage - Phase 3
-    device_class: voltage
-    value_template: "{{ (value_json.value | float(default=0) | round(1)) if value_json is defined and value_json.value is not none else 0 }}"
-    unit_of_measurement: V
-    unique_id: Victron_Grid_Voltage_L3
-    device: *grid_meter_device 
-
-  - state_topic: victron-home/N/c0847d9b49b3/grid/30/Ac/L1/Current
-    name: Grid Current - Phase 1
-    device_class: current
-    value_template: "{{ (value_json.value | float(default=0) | round(1)) if value_json is defined and value_json.value is not none else 0 }}"
-    unit_of_measurement: A
-    unique_id: Victron_Grid_Curent_L1
-    device: *grid_meter_device 
-
-  - state_topic: victron-home/N/c0847d9b49b3/grid/30/Ac/L2/Current
-    name: Grid Current - Phase 2
-    device_class: current
-    value_template: "{{ (value_json.value | float(default=0) | round(1)) if value_json is defined and value_json.value is not none else 0 }}"
-    unit_of_measurement: A
-    unique_id: Victron_Grid_Curent_L2
-    device: *grid_meter_device 
-
-  - state_topic: victron-home/N/c0847d9b49b3/grid/30/Ac/L3/Current
-    name: Grid Current - Phase 3
-    device_class: current
-    value_template: "{{ (value_json.value | float(default=0) | round(1)) if value_json is defined and value_json.value is not none else 0 }}"
-    unit_of_measurement: A
-    unique_id: Victron_Grid_Curent_L3
-    device: *grid_meter_device 
 
   - state_topic: victron-home/N/c0847d9b49b3/system/0/Dc/Pv/Power
-    name: Current Solar Production
+    name: Total PV Power
     device_class: power
     state_class: measurement
     value_template: '{{ value_json.value|float(0)|round(0) }}'
     unit_of_measurement: W
     icon: 'mdi:solar-power'
-    unique_id: Current_SolarPower
+    unique_id: total_pv_power
     device: *cerbo_device 
 
-  - state_topic: victron-home/N/c0847d9b49b3/solarcharger/0/Yield/Power
-    name: MPPT 0 Production
-    device_class: power
-    value_template: '{{ value_json.value|float(0)|round(0) }}'
-    unit_of_measurement: W
-    icon: 'mdi:solar-power'
-    unique_id: mppt_0_power
-    device: &mppt_device0
-      identifiers:
-        - "Victron MPPT 0"
-      manufacturer: "Victron Energy"
-      model: "MPPT 250-100"
-      name: "Victron MPPT 1"
-
-  - state_topic: victron-home/N/c0847d9b49b3/solarcharger/0/Dc/0/Voltage
-    name: MPPT 0 Voltage
-    device_class: voltage
-    value_template: "{{ (value_json.value | float(default=0) | round(1)) if value_json is defined and value_json.value is not none else 0 }}"
-    unit_of_measurement: V
-    unique_id: mppt_0_voltage  
-    device: *mppt_device0 
-
-  - state_topic: victron-home/N/c0847d9b49b3/solarcharger/0/Dc/0/Current
-    name: MPPT 0 Current
-    device_class: current
-    value_template: "{{ (value_json.value | float(default=0) | round(1)) if value_json is defined and value_json.value is not none else 0 }}"
-    unit_of_measurement: A
-    unique_id: mppt_0_current
-    device: *mppt_device0 
-
-  - state_topic: victron-home/N/c0847d9b49b3/solarcharger/277/Yield/Power
-    name: MPPT 277 Production
-    device_class: power
-    value_template: '{{ value_json.value|float(0)|round(0) }}'
-    unit_of_measurement: W
-    icon: 'mdi:solar-power'
-    unique_id: mppt_277_power
-    device: &mppt_device277
-      identifiers:
-        - "Victron MPPT 270"
-      manufacturer: "Victron Energy"
-      model: "MPPT 250-100"
-      name: "Victron MPPT 2"
-
-  - state_topic: victron-home/N/c0847d9b49b3/solarcharger/277/Dc/0/Voltage
-    name: MPPT 277 Voltage
-    device_class: voltage
-    value_template: "{{ (value_json.value | float(default=0) | round(1)) if value_json is defined and value_json.value is not none else 0 }}"
-    unit_of_measurement: V
-    unique_id: mppt_277_voltage  
-    device: *mppt_device277 
-
-  - state_topic: victron-home/N/c0847d9b49b3/solarcharger/277/Dc/0/Current
-    name: MPPT 277 Current
-    device_class: current
-    value_template: "{{ (value_json.value | float(default=0) | round(1)) if value_json is defined and value_json.value is not none else 0 }}"
-    unit_of_measurement: A
-    unique_id: mppt_277_current
-    device: *mppt_device277 
-
-  - state_topic: victron-home/N/c0847d9b49b3/solarcharger/280/Yield/Power
-    name: MPPT 280 Production
-    device_class: power
-    value_template: '{{ value_json.value|float(0)|round(0) }}'
-    unit_of_measurement: W
-    icon: 'mdi:solar-power'
-    unique_id: mppt_280_power
-    device: &mppt_device280
-      identifiers:
-        - "Victron MPPT 280"
-      manufacturer: "Victron Energy"
-      model: "MPPT 250-100"
-      name: "Victron MPPT 3"
-
-  - state_topic: victron-home/N/c0847d9b49b3/solarcharger/280/Dc/0/Voltage
-    name: MPPT 280 Voltage
-    device_class: voltage
-    value_template: "{{ (value_json.value | float(default=0) | round(1)) if value_json is defined and value_json.value is not none else 0 }}"
-    unit_of_measurement: V
-    unique_id: mppt_280_voltage
-    device: *mppt_device280
-
-  - state_topic: victron-home/N/c0847d9b49b3/solarcharger/280/Dc/0/Current
-    name: MPPT 280 Current
-    device_class: current
-    value_template: "{{ (value_json.value | float(default=0) | round(1)) if value_json is defined and value_json.value is not none else 0 }}"
-    unit_of_measurement: A
-    unique_id: mppt_280_current
-    device: *mppt_device280
-
-  - state_topic: victron-home/N/c0847d9b49b3/solarcharger/281/Yield/Power
-    name: MPPT 281 Production
-    device_class: power
-    value_template: '{{ value_json.value|float(0)|round(0) }}'
-    unit_of_measurement: W
-    icon: 'mdi:solar-power'
-    unique_id: mppt_281_power
-    device: &mppt_device281
-      identifiers:
-        - "Victron MPPT 281"
-      manufacturer: "Victron Energy"
-      model: "MPPT 250-60"
-      name: "Victron MPPT 4"
-
-  - state_topic: victron-home/N/c0847d9b49b3/solarcharger/281/Dc/0/Voltage
-    name: MPPT 281 Voltage
-    device_class: voltage
-    value_template: "{{ (value_json.value | float(default=0) | round(1)) if value_json is defined and value_json.value is not none else 0 }}"
-    unit_of_measurement: V
-    unique_id: mppt_281_voltage
-    device: *mppt_device281
-
-  - state_topic: victron-home/N/c0847d9b49b3/solarcharger/281/Dc/0/Current
-    name: MPPT 281 Current
-    device_class: current
-    value_template: "{{ (value_json.value | float(default=0) | round(1)) if value_json is defined and value_json.value is not none else 0 }}"
-    unit_of_measurement: A
-    unique_id: mppt_281_current
-    device: *mppt_device281
-
-  - state_topic: victron-home/N/c0847d9b49b3/solarcharger/277/State
-    name: Solar Charger State 277
-    value_template: >
-      {% if value_json is defined and value_json.value is defined %}
-        {% if value_json.value == 0 %}
-          Off
-        {% elif value_json.value == 2 %}
-          Fault
-        {% elif value_json.value == 3 %}
-          Bulk
-        {% elif value_json.value == 4 %}
-          Absorption
-        {% elif value_json.value == 5 %}
-          Float
-        {% elif value_json.value == 6 %}
-          Storage
-        {% elif value_json.value == 7 %}
-          Equalize
-        {% elif value_json.value == 11 %}
-          Other (Hub-1)
-        {% elif value_json.value == 252 %}
-          External control
-        {% else %}
-          Error - No Data
-        {% endif %}
-      {% else %}
-        Waiting for Data
-      {% endif %}
-    unique_id: Victron_MPPT_State_277
-    device: *mppt_device277  
-
-  - state_topic: victron-home/N/c0847d9b49b3/solarcharger/280/State
-    name: Solar Charger State 280
-    value_template: >
-      {% if value_json is defined and value_json.value is defined %}
-        {% if value_json.value == 0 %}
-          Off
-        {% elif value_json.value == 252 %}
-          External control
-        {% elif value_json.value == 2 %}
-          Fault
-        {% elif value_json.value == 3 %}
-          Bulk
-        {% elif value_json.value == 4 %}
-          Absorption
-        {% elif value_json.value == 5 %}
-          Float
-        {% elif value_json.value == 6 %}
-          Storage
-        {% elif value_json.value == 7 %}
-          Equalize
-        {% elif value_json.value == 11 %}
-          Other (Hub-1)
-        {% else %}
-          Error - No Data
-        {% endif %}
-      {% else %}
-        Waiting for Data
-      {% endif %}     
-    unique_id: Victron_MPPT_State_280
-    device: *mppt_device280
-
-  - state_topic: victron-home/N/c0847d9b49b3/solarcharger/281/State
-    name: Solar Charger State 281
-    value_template: >
-      {% if value_json is defined and value_json.value is defined %}
-        {% if value_json.value == 0 %}
-          Off
-        {% elif value_json.value == 2 %}
-          Fault
-        {% elif value_json.value == 3 %}
-          Bulk
-        {% elif value_json.value == 4 %}
-          Absorption
-        {% elif value_json.value == 5 %}
-          Float
-        {% elif value_json.value == 6 %}
-          Storage
-        {% elif value_json.value == 7 %}
-          Equalize
-        {% elif value_json.value == 11 %}
-          Other (Hub-1)
-        {% elif value_json.value == 252 %}
-          External control
-        {% else %}
-          Error - No Data
-        {% endif %}
-      {% else %}
-        Waiting for Data
-      {% endif %}     
-    unique_id: Victron_MPPT_State_281
-    device: *mppt_device281
-
   - state_topic: victron-home/N/c0847d9b49b3/system/0/Ac/ActiveIn/Source
-    name: Active input source
-    unique_id: active_input
+    name: Active Input Source
+    unique_id: active_input_source
     value_template: >
       {% if value_json is defined and value_json.value is defined %}
         {% if value_json.value == 0 %}
@@ -538,6 +123,510 @@ sensor:
       {% endif %}
     unique_id: Victron_Quattro_State
     device: *cerbo_device   
+
+# Grid Power via Cerbo GX if no grid meter is available
+#  - state_topic: victron-home/N/c0847d9b49b3/system/0/Ac/Grid/L1/Power
+#    name: Grid L1 Power
+#    device_class: power
+#    value_template: |-
+#      {% if value_json is defined and value_json.value is not none %}
+#        {{ value_json.value | round(0) }}
+#      {% else %}
+#        0
+#      {% endif %}
+#    unit_of_measurement: W
+#    icon: 'mdi:power-socket-uk'
+#    unique_id: grid_l1_power
+#    device: *cerbo_device 
+#  
+#  - state_topic: victron-home/N/c0847d9b49b3/system/0/Ac/Grid/L2/Power
+#    name: Grid L2 Power
+#    device_class: power
+#    value_template: |-
+#      {% if value_json is defined and value_json.value is not none %}
+#        {{ value_json.value | round(0) }}
+#      {% else %}
+#        0
+#      {% endif %}
+#    unit_of_measurement: W
+#    icon: 'mdi:power-socket-uk'
+#    unique_id: grid_l2_power
+#    device: *cerbo_device 
+#  
+#  - state_topic: victron-home/N/c0847d9b49b3/system/0/Ac/Grid/L3/Power
+#    name: Grid L3 Power
+#    device_class: power
+#    value_template: |-
+#      {% if value_json is defined and value_json.value is not none %}
+#        {{ value_json.value | round(0) }}
+#      {% else %}
+#        0
+#      {% endif %}
+#    unit_of_measurement: W
+#    icon: 'mdi:power-socket-uk'
+#    unique_id: grid_l3_power
+#    device: *cerbo_device 
+
+# Sensor data from inverters
+  - state_topic: victron-home/N/c0847d9b49b3/vebus/276/Ac/Out/L1/P
+    name: Load L1 Power
+    device_class: power
+    value_template: '{{ value_json.value|round(0)}}'
+    unit_of_measurement: W
+    icon: 'mdi:power-socket-uk'
+    unique_id: load_l1_power
+    device: &inverter_device
+      identifiers:
+        - "Victron Quattro 48/10000"
+      manufacturer: "Victron Energy"
+      model: "Quattro 48/10000"
+      name: "Victron Inverter" 
+
+  - state_topic: victron-home/N/c0847d9b49b3/vebus/276/Ac/Out/L1/V
+    name: Load L1 Voltage
+    device_class: voltage
+    value_template: "{{ (value_json.value | float(default=0) | round(1)) if value_json is defined and value_json.value is not none else 0 }}"
+    unit_of_measurement: V
+    unique_id: load_l1_voltage
+    device: *inverter_device 
+
+  - state_topic: victron-home/N/c0847d9b49b3/vebus/276/Ac/Out/L1/I
+    name:  Load L1 Current
+    device_class: current
+    value_template: "{{ (value_json.value | float(default=0) | round(1)) if value_json is defined and value_json.value is not none else 0 }}"
+    unit_of_measurement: A
+    unique_id: load_l1_current
+    device: *inverter_device 
+  
+  - state_topic: victron-home/N/c0847d9b49b3/vebus/276/Ac/Out/L2/P
+    name: Load L2 Power
+    device_class: power
+    value_template: '{{ value_json.value | round(0) }}'
+    unit_of_measurement: W
+    icon: 'mdi:power-socket-uk'
+    unique_id: load_l2_power
+    device: *inverter_device 
+
+  - state_topic: victron-home/N/c0847d9b49b3/vebus/276/Ac/Out/L2/V
+    name: Load L2 Voltage
+    device_class: voltage
+    value_template: "{{ (value_json.value | float(default=0) | round(1)) if value_json is defined and value_json.value is not none else 0 }}"
+    unit_of_measurement: V
+    unique_id: load_l2_voltage
+    device: *inverter_device 
+
+  - state_topic: victron-home/N/c0847d9b49b3/vebus/276/Ac/Out/L2/I
+    name: Load L2 Current
+    device_class: current
+    value_template: "{{ (value_json.value | float(default=0) | round(1)) if value_json is defined and value_json.value is not none else 0 }}"
+    unit_of_measurement: A
+    unique_id: load_l2_current
+    device: *inverter_device 
+
+  - state_topic: victron-home/N/c0847d9b49b3/vebus/276/Ac/Out/L3/P
+    name: Load L3 Power
+    device_class: power
+    value_template: '{{ value_json.value | round(0) }}'
+    unit_of_measurement: W
+    icon: 'mdi:power-socket-uk'
+    unique_id: load_l3_power
+    device: *inverter_device 
+  
+  - state_topic: victron-home/N/c0847d9b49b3/vebus/276/Ac/Out/L3/V
+    name: Load L3 Voltage
+    device_class: voltage
+    value_template: "{{ (value_json.value | float(default=0) | round(1)) if value_json is defined and value_json.value is not none else 0 }}"
+    unit_of_measurement: V
+    unique_id: load_l3_voltage
+    device: *inverter_device 
+
+  - state_topic: victron-home/N/c0847d9b49b3/vebus/276/Ac/Out/L3/I
+    name: Load L3 Current
+    device_class: current
+    value_template: "{{ (value_json.value | float(default=0) | round(1)) if value_json is defined and value_json.value is not none else 0 }}"
+    unit_of_measurement: A
+    unique_id: load_l3_current
+    device: *inverter_device
+
+# Active Input Power via inverters
+  - state_topic: victron-home/N/c0847d9b49b3/vebus/276/Ac/ActiveIn/L1/P
+    name: Active Input L1 Power
+    device_class: power
+    value_template: '{{ value_json.value | round(0) }}'
+    unit_of_measurement: W
+    icon: 'mdi:power-socket-uk'
+    unique_id: active_input_l1_power
+    device: *inverter_device
+
+  - state_topic: victron-home/N/c0847d9b49b3/vebus/276/Ac/ActiveIn/L2/P
+    name: Active Input L2 Power
+    device_class: power
+    value_template: '{{ value_json.value | round(0) }}'
+    unit_of_measurement: W
+    icon: 'mdi:power-socket-uk'
+    unique_id: active_input_l2_power
+    device: *inverter_device
+
+  - state_topic: victron-home/N/c0847d9b49b3/vebus/276/Ac/ActiveIn/L3/P
+    name: Active Input L3 Power
+    device_class: power
+    value_template: '{{ value_json.value | round(0) }}'
+    unit_of_measurement: W
+    icon: 'mdi:power-socket-uk'
+    unique_id: active_input_l3_power
+    device: *inverter_device
+
+# Grid data via grid meter if available
+  - state_topic: "victron-home/N/c0847d9b49b3/grid/30/Ac/Energy/Forward"
+    name: "Grid meter energy import"
+    device_class: energy
+    state_class: total_increasing
+    value_template: '{{ value_json.value|float(0)|round(0) }}'
+    unit_of_measurement: "kWh"
+    unique_id: "grid_meter_energy_import"
+    device: &grid_meter_device
+      identifiers:
+        - "Victron Grid Meter"
+      manufacturer: "Victron Energy"
+      model: "ET340"
+      name: "Victron Grid Meter"
+
+  - state_topic: "victron-home/N/c0847d9b49b3/grid/30/Ac/Energy/Reverse"
+    name: "Grid meter energy export"
+    device_class: energy
+    state_class: total_increasing
+    value_template: '{{ value_json.value|float(0)|round(0) }}'
+    unit_of_measurement: "kWh"
+    unique_id: "grid_meter_energy_ export"
+    device: *grid_meter_device
+
+  - state_topic: victron-home/N/c0847d9b49b3/grid/30/Ac/L1/Power
+    name: Grid L1 Power
+    device_class: power
+    value_template: '{{ value_json.value | round(0) }}'
+    unit_of_measurement: W
+    icon: 'mdi:power-socket-uk'
+    unique_id: grid_l1_power
+    device: *grid_meter_device
+
+  - state_topic: victron-home/N/c0847d9b49b3/grid/30/Ac/L2/Power
+    name: Grid L2 Power
+    device_class: power
+    value_template: '{{ value_json.value | round(0) }}'
+    unit_of_measurement: W
+    icon: 'mdi:power-socket-uk'
+    unique_id: grid_l2_power
+    device: *grid_meter_device
+
+  - state_topic: victron-home/N/c0847d9b49b3/grid/30/Ac/L3/Power
+    name: Grid L3 Power
+    device_class: power
+    value_template: '{{ value_json.value | round(0) }}'
+    unit_of_measurement: W
+    icon: 'mdi:power-socket-uk'
+    unique_id: grid_l3_power
+    device: *grid_meter_device
+
+  - state_topic: victron-home/N/c0847d9b49b3/grid/30/Ac/Power
+    name: Total Grid Power
+    device_class: power
+    value_template: "{{ (value_json.value | float(default=0) | round(1)) if value_json is defined and value_json.value is not none else 0 }}"
+    unit_of_measurement: W
+    icon: 'mdi:power-socket-uk'
+    unique_id: total_grid_power
+    device: *grid_meter_device 
+
+  - state_topic: victron-home/N/c0847d9b49b3/grid/30/Ac/L1/Voltage
+    name: Grid L1 Voltage
+    device_class: voltage
+    value_template: "{{ (value_json.value | float(default=0) | round(1)) if value_json is defined and value_json.value is not none else 0 }}"
+    unit_of_measurement: V
+    unique_id: grid_l1_voltage
+    device: *grid_meter_device
+
+  - state_topic: victron-home/N/c0847d9b49b3/grid/30/Ac/L2/Voltage
+    name: Grid L2 Voltage
+    device_class: voltage
+    value_template: "{{ (value_json.value | float(default=0) | round(1)) if value_json is defined and value_json.value is not none else 0 }}"
+    unit_of_measurement: V
+    unique_id: grid_l2_voltage
+    device: *grid_meter_device 
+
+  - state_topic: victron-home/N/c0847d9b49b3/grid/30/Ac/L3/Voltage
+    name: Grid L3 Voltage
+    device_class: voltage
+    value_template: "{{ (value_json.value | float(default=0) | round(1)) if value_json is defined and value_json.value is not none else 0 }}"
+    unit_of_measurement: V
+    unique_id: grid_l3_voltage
+    device: *grid_meter_device 
+
+  - state_topic: victron-home/N/c0847d9b49b3/grid/30/Ac/L1/Current
+    name: Grid L1 Current
+    device_class: current
+    value_template: "{{ (value_json.value | float(default=0) | round(1)) if value_json is defined and value_json.value is not none else 0 }}"
+    unit_of_measurement: A
+    unique_id: grid_l1_current
+    device: *grid_meter_device 
+
+  - state_topic: victron-home/N/c0847d9b49b3/grid/30/Ac/L2/Current
+    name: Grid L2 Current
+    device_class: current
+    value_template: "{{ (value_json.value | float(default=0) | round(1)) if value_json is defined and value_json.value is not none else 0 }}"
+    unit_of_measurement: A
+    unique_id: grid_l2_current
+    device: *grid_meter_device 
+
+  - state_topic: victron-home/N/c0847d9b49b3/grid/30/Ac/L3/Current
+    name: Grid L3 Current
+    device_class: current
+    value_template: "{{ (value_json.value | float(default=0) | round(1)) if value_json is defined and value_json.value is not none else 0 }}"
+    unit_of_measurement: A
+    unique_id: grid_l3_current
+    device: *grid_meter_device
+
+  - state_topic: victron-home/N/c0847d9b49b3/solarcharger/0/Yield/Power
+    name: MPPT 1 Power
+    device_class: power
+    value_template: '{{ value_json.value|float(0)|round(0) }}'
+    unit_of_measurement: W
+    icon: 'mdi:solar-power'
+    unique_id: mppt_1_power
+    device: &mppt_device0
+      identifiers:
+        - "MPPT 0"
+      manufacturer: "Victron Energy"
+      model: "MPPT 250-100"
+      name: "Solar Charger 1"
+
+  - state_topic: victron-home/N/c0847d9b49b3/solarcharger/0/Dc/0/Voltage
+    name: MPPT 1 Voltage
+    device_class: voltage
+    value_template: "{{ (value_json.value | float(default=0) | round(1)) if value_json is defined and value_json.value is not none else 0 }}"
+    unit_of_measurement: V
+    unique_id: mppt_0_voltage  
+    device: *mppt_device0
+
+  - state_topic: victron-home/N/c0847d9b49b3/solarcharger/0/Dc/0/Current
+    name: MPPT 1 Current
+    device_class: current
+    value_template: "{{ (value_json.value | float(default=0) | round(1)) if value_json is defined and value_json.value is not none else 0 }}"
+    unit_of_measurement: A
+    unique_id: mppt_1_current
+    device: *mppt_device0 
+
+  - state_topic: victron-home/N/c0847d9b49b3/solarcharger/0/State
+    name: MPPT 1 State
+    value_template: >
+      {% if value_json is defined and value_json.value is defined %}
+        {% if value_json.value == 0 %}
+          Off
+        {% elif value_json.value == 2 %}
+          Fault
+        {% elif value_json.value == 3 %}
+          Bulk
+        {% elif value_json.value == 4 %}
+          Absorption
+        {% elif value_json.value == 5 %}
+          Float
+        {% elif value_json.value == 6 %}
+          Storage
+        {% elif value_json.value == 7 %}
+          Equalize
+        {% elif value_json.value == 11 %}
+          Other (Hub-1)
+        {% elif value_json.value == 252 %}
+          External control
+        {% else %}
+          Error - No Data
+        {% endif %}
+      {% else %}
+        Waiting for Data
+      {% endif %}     
+    unique_id: mppt_1_state
+    device: *mppt_device0
+
+  - state_topic: victron-home/N/c0847d9b49b3/solarcharger/277/Yield/Power
+    name: MPPT 2 Power
+    device_class: power
+    value_template: '{{ value_json.value|float(0)|round(0) }}'
+    unit_of_measurement: W
+    icon: 'mdi:solar-power'
+    unique_id: mppt_2_power
+    device: &mppt_device277
+      identifiers:
+        - "MPPT 277"
+      manufacturer: "Victron Energy"
+      model: "MPPT 250-100"
+      name: "Solar Charger 2"
+
+  - state_topic: victron-home/N/c0847d9b49b3/solarcharger/277/Dc/0/Voltage
+    name: MPPT 2 Voltage
+    device_class: voltage
+    value_template: "{{ (value_json.value | float(default=0) | round(1)) if value_json is defined and value_json.value is not none else 0 }}"
+    unit_of_measurement: V
+    unique_id: mppt_2_voltage  
+    device: *mppt_device277
+
+  - state_topic: victron-home/N/c0847d9b49b3/solarcharger/277/Dc/0/Current
+    name: MPPT 2 Current
+    device_class: current
+    value_template: "{{ (value_json.value | float(default=0) | round(1)) if value_json is defined and value_json.value is not none else 0 }}"
+    unit_of_measurement: A
+    unique_id: mppt_2_current
+    device: *mppt_device277 
+
+  - state_topic: victron-home/N/c0847d9b49b3/solarcharger/277/State
+    name: MPPT 2 State
+    value_template: >
+      {% if value_json is defined and value_json.value is defined %}
+        {% if value_json.value == 0 %}
+          Off
+        {% elif value_json.value == 2 %}
+          Fault
+        {% elif value_json.value == 3 %}
+          Bulk
+        {% elif value_json.value == 4 %}
+          Absorption
+        {% elif value_json.value == 5 %}
+          Float
+        {% elif value_json.value == 6 %}
+          Storage
+        {% elif value_json.value == 7 %}
+          Equalize
+        {% elif value_json.value == 11 %}
+          Other (Hub-1)
+        {% elif value_json.value == 252 %}
+          External control
+        {% else %}
+          Error - No Data
+        {% endif %}
+      {% else %}
+        Waiting for Data
+      {% endif %}
+    unique_id: mppt_2_state
+    device: *mppt_device277
+
+  - state_topic: victron-home/N/c0847d9b49b3/solarcharger/280/Yield/Power
+    name: MPPT 3 Power
+    device_class: power
+    value_template: '{{ value_json.value|float(0)|round(0) }}'
+    unit_of_measurement: W
+    icon: 'mdi:solar-power'
+    unique_id: mppt_3_power
+    device: &mppt_device280
+      identifiers:
+        - "MPPT 280"
+      manufacturer: "Victron Energy"
+      model: "MPPT 250-100"
+      name: "Solar Charger 3"
+
+  - state_topic: victron-home/N/c0847d9b49b3/solarcharger/280/Dc/0/Voltage
+    name: MPPT 3 Voltage
+    device_class: voltage
+    value_template: "{{ (value_json.value | float(default=0) | round(1)) if value_json is defined and value_json.value is not none else 0 }}"
+    unit_of_measurement: V
+    unique_id: mppt_3_voltage
+    device: *mppt_device280
+
+  - state_topic: victron-home/N/c0847d9b49b3/solarcharger/280/Dc/0/Current
+    name: MPPT 3 Current
+    device_class: current
+    value_template: "{{ (value_json.value | float(default=0) | round(1)) if value_json is defined and value_json.value is not none else 0 }}"
+    unit_of_measurement: A
+    unique_id: mppt_3_current
+    device: *mppt_device280
+
+  - state_topic: victron-home/N/c0847d9b49b3/solarcharger/280/State
+    name: MPPT 3 State
+    value_template: >
+      {% if value_json is defined and value_json.value is defined %}
+        {% if value_json.value == 0 %}
+          Off
+        {% elif value_json.value == 252 %}
+          External control
+        {% elif value_json.value == 2 %}
+          Fault
+        {% elif value_json.value == 3 %}
+          Bulk
+        {% elif value_json.value == 4 %}
+          Absorption
+        {% elif value_json.value == 5 %}
+          Float
+        {% elif value_json.value == 6 %}
+          Storage
+        {% elif value_json.value == 7 %}
+          Equalize
+        {% elif value_json.value == 11 %}
+          Other (Hub-1)
+        {% else %}
+          Error - No Data
+        {% endif %}
+      {% else %}
+        Waiting for Data
+      {% endif %}     
+    unique_id: mppt_3_state
+    device: *mppt_device280
+
+  - state_topic: victron-home/N/c0847d9b49b3/solarcharger/281/Yield/Power
+    name: MPPT 4 Power
+    device_class: power
+    value_template: '{{ value_json.value|float(0)|round(0) }}'
+    unit_of_measurement: W
+    icon: 'mdi:solar-power'
+    unique_id: mppt_4_power
+    device: &mppt_device281
+      identifiers:
+        - "MPPT 281"
+      manufacturer: "Victron Energy"
+      model: "MPPT 250-60"
+      name: "Solar Charger 4"
+
+  - state_topic: victron-home/N/c0847d9b49b3/solarcharger/281/Dc/0/Voltage
+    name: MPPT 4 Voltage
+    device_class: voltage
+    value_template: "{{ (value_json.value | float(default=0) | round(1)) if value_json is defined and value_json.value is not none else 0 }}"
+    unit_of_measurement: V
+    unique_id: mppt_4_voltage
+    device: *mppt_device281
+
+  - state_topic: victron-home/N/c0847d9b49b3/solarcharger/281/Dc/0/Current
+    name: MPPT 4 Current
+    device_class: current
+    value_template: "{{ (value_json.value | float(default=0) | round(1)) if value_json is defined and value_json.value is not none else 0 }}"
+    unit_of_measurement: A
+    unique_id: mppt_4_current
+    device: *mppt_device281
+
+  - state_topic: victron-home/N/c0847d9b49b3/solarcharger/281/State
+    name: MPPT 4 State
+    value_template: >
+      {% if value_json is defined and value_json.value is defined %}
+        {% if value_json.value == 0 %}
+          Off
+        {% elif value_json.value == 2 %}
+          Fault
+        {% elif value_json.value == 3 %}
+          Bulk
+        {% elif value_json.value == 4 %}
+          Absorption
+        {% elif value_json.value == 5 %}
+          Float
+        {% elif value_json.value == 6 %}
+          Storage
+        {% elif value_json.value == 7 %}
+          Equalize
+        {% elif value_json.value == 11 %}
+          Other (Hub-1)
+        {% elif value_json.value == 252 %}
+          External control
+        {% else %}
+          Error - No Data
+        {% endif %}
+      {% else %}
+        Waiting for Data
+      {% endif %}     
+    unique_id: mppt_4_state
+    device: *mppt_device281
 
 binary_sensor:
   - state_topic: victron-home/N/c0847d9b49b3/vebus/276/Alarms/PhaseRotation
