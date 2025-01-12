@@ -118,13 +118,13 @@ def cerbo_on_message(client, userdata, msg):
                     "name": param,
                     "value": json.loads(payload)  # Assumes payload is JSON, parse and send the value
                 })
-                print(f"Publishing to {ha_topic}: {ha_payload}")
                 # Publish to the Home Assistant topic
                 ha_mqtt_client.publish(ha_topic, ha_payload, retain=False)
                 print(f"Published to {ha_topic}: {ha_payload}")
                 break
         else:
-            print(f"Topic {topic_suffix} not found in READ_PARAMETER_MAP")
+            pass
+            # print(f"Topic {topic_suffix} not found in READ_PARAMETER_MAP")
     else:
         print("MQTT not connected ... ")
 
@@ -206,7 +206,9 @@ def ha_discovery():
 try:
     ha_discovery()
     while True:
-        time.sleep(0.5)
+        time.sleep(5)
+        if cerbo_mqtt_client.is_connected():
+            cerbo_mqtt_client.publish(f"R/{CERBO_SERIAL_NO}/keepalive")
         pass
 except Exception as e:
     logging.error(f"An error occurred: {e}")
