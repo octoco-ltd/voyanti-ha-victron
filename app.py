@@ -45,14 +45,16 @@ CERBO_MQTT_USER = config['cerbo_mqtt_user']
 CERBO_MQTT_PASSWORD = config['cerbo_mqtt_password']
 CERBO_SERIAL_NO = config['cerbo_serial_no']
 
-
+ha_mqtt_connected = False
 
 
 def ha_on_connect(client, userdata, flags, rc):
+    ha_mqtt_connected = True
     logging.info("Connected to MQTT broker")
     # Subscribe here to topics in HA that we need to listen to i.e. set SoC topic etc.
 
 def ha_on_disconnect(client, userdata, rc):
+    ha_mqtt_connected = False
     if rc != 0:
         logging.error("Unexpected disconnection.")
     else:
@@ -85,30 +87,33 @@ def cerbo_on_disconnect(client, userdata, rc):
 
 
 def cerbo_on_message(client, userdata, msg):
-    # Get the topic and payload
-    topic = msg.topic
-    payload = msg.payload.decode("utf-8")
+    if ha_mqtt_connected == True:
+        # Get the topic and payload
+        topic = msg.topic
+        payload = msg.payload.decode("utf-8")
 
-    # Split the topic into parts by '/'
-    topic_parts = topic.split("/")
-    topic_suffix = "/".join(topic_parts[2:])  # Get the part after the ID
+        # Split the topic into parts by '/'
+        topic_parts = topic.split("/")
+        topic_suffix = "/".join(topic_parts[2:])  # Get the part after the ID
 
-    # Find the matching parameter in READ_PARAMETER_MAP
-    for param, details in READ_PARAMETER_MAP.items():
-        if details["topic"] == topic_suffix:
-            # Found a match, construct Home Assistant topic and payload
-            ha_topic = f"{HA_MQTT_DISCOVERY_TOPIC}/sensor/victron_{CERBO_SERIAL_NO}/{param.replace(' ', '_').lower()}/state"
-            ha_payload = json.dumps({
-                "name": param,
-                "value": json.loads(payload)  # Assumes payload is JSON, parse and send the value
-            })
+        # Find the matching parameter in READ_PARAMETER_MAP
+        for param, details in READ_PARAMETER_MAP.items():
+            if details["topic"] == topic_suffix:
+                # Found a match, construct Home Assistant topic and payload
+                ha_topic = f"{HA_MQTT_BASE_TOPIC}/{CERBO_SERIAL_NO}/{param.replace(' ', '_').lower()}"
+                ha_payload = json.dumps({
+                    "name": param,
+                    "value": json.loads(payload)  # Assumes payload is JSON, parse and send the value
+                })
 
-            # Publish to the Home Assistant topic
-            ha_mqtt_client.publish(ha_topic, ha_payload, retain=True)
-            print(f"Published to {ha_topic}: {ha_payload}")
-            break
+                # Publish to the Home Assistant topic
+                ha_mqtt_client.publish(ha_topic, ha_payload, retain=True)
+                print(f"Published to {ha_topic}: {ha_payload}")
+                break
+        else:
+            print(f"Topic {topic_suffix} not found in READ_PARAMETER_MAP")
     else:
-        print(f"Topic {topic_suffix} not found in READ_PARAMETER_MAP")
+        print("Cerbo not connected ... ")
 
 # Initialize HA MQTT client
 ha_mqtt_client = mqtt.Client()
