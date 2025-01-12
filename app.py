@@ -124,8 +124,7 @@ def cerbo_on_message(client, userdata, msg):
                 print(f"Published to {ha_topic}: {ha_payload}")
                 break
         else:
-            pass
-            # print(f"Topic {topic_suffix} not found in READ_PARAMETER_MAP")
+            print(f"Topic {topic_suffix} not found in READ_PARAMETER_MAP")
     else:
         print("MQTT not connected ... ")
 
