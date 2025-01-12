@@ -129,7 +129,7 @@ cerbo_mqtt_client = mqtt.Client()
 cerbo_mqtt_client.on_connect = cerbo_on_connect
 cerbo_mqtt_client.on_disconnect = cerbo_on_disconnect
 cerbo_mqtt_client.on_message = cerbo_on_message
-cerbo_mqtt_client.username_pw_set(username=CERBO_MQTT_USER, password=CERBO_MQTT_PASSWORD)
+# cerbo_mqtt_client.username_pw_set(username=CERBO_MQTT_USER, password=CERBO_MQTT_PASSWORD)
 cerbo_mqtt_client.connect(CERBO_MQTT_BROKER, CERBO_MQTT_PORT, 60)
 cerbo_mqtt_client.loop_start()
 
