@@ -32,7 +32,6 @@ else:
 
 # Configuration settings
 INVERTER_MODEL = config['inverter_model']
-HA_PREFIX = config['ha_inverter_prefix']
 HA_MQTT_BROKER = config['ha_mqtt_host']
 HA_MQTT_PORT = config['ha_mqtt_port']
 HA_MQTT_USER = config['ha_mqtt_user']
