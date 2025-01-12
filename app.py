@@ -8,6 +8,7 @@ import threading
 import logging
 import sys
 import traceback
+from victron_map import READ_PARAMETER_MAP
 
 # Configure logging
 logging.basicConfig(
@@ -71,6 +72,8 @@ def ha_on_message(client, userdata, msg):
 
 def cerbo_on_connect(client, userdata, flags, rc):
     logging.info("Connected to Cerbo MQTT broker")
+    cerbo_mqtt_client.subscribe(f'N/{CERBO_SERIAL_NO}/#')
+    cerbo_mqtt_client.subscribe(f'W/{CERBO_SERIAL_NO}/#')
     # Subscribe here to Cerbo topics thats we are interested in
 
 def cerbo_on_disconnect(client, userdata, rc):
@@ -82,13 +85,30 @@ def cerbo_on_disconnect(client, userdata, rc):
 
 
 def cerbo_on_message(client, userdata, msg):
-    # Get the topic
+    # Get the topic and payload
     topic = msg.topic
+    payload = msg.payload.decode("utf-8")
 
     # Split the topic into parts by '/'
-    topic_parts = topic.split('/')
-    pass
-    # Pass message on to HA on correct topic
+    topic_parts = topic.split("/")
+    topic_suffix = "/".join(topic_parts[2:])  # Get the part after the ID
+
+    # Find the matching parameter in READ_PARAMETER_MAP
+    for param, details in READ_PARAMETER_MAP.items():
+        if details["topic"] == topic_suffix:
+            # Found a match, construct Home Assistant topic and payload
+            ha_topic = f"{HA_MQTT_DISCOVERY_TOPIC}/sensor/victron_{CERBO_SERIAL_NO}/{param.replace(' ', '_').lower()}/state"
+            ha_payload = json.dumps({
+                "name": param,
+                "value": json.loads(payload)  # Assumes payload is JSON, parse and send the value
+            })
+
+            # Publish to the Home Assistant topic
+            ha_mqtt_client.publish(ha_topic, ha_payload, retain=True)
+            print(f"Published to {ha_topic}: {ha_payload}")
+            break
+    else:
+        print(f"Topic {topic_suffix} not found in READ_PARAMETER_MAP")
 
 # Initialize HA MQTT client
 ha_mqtt_client = mqtt.Client()
@@ -131,29 +151,7 @@ def ha_discovery():
     # Base availability topic
     availability_topic = f"{HA_MQTT_BASE_TOPIC}_{CERBO_SERIAL_NO}/availability"
 
-    # Define all sensor parameters and publish discovery messages
-    parameters = {
-        "Module Voltage": {"device_class": "voltage", "unit": "V"},
-        "Module Current": {"device_class": "current", "unit": "A"},
-        "Rated Current": {"device_class": "current", "unit": "A"},
-        "Rated Power": {"device_class": "current", "unit": "W"},
-        "Current Limit": {"device_class": "current", "unit": "A"},
-        "Temperature of DC Board": {"device_class": "temperature", "unit": "°C"},
-        "Input Phase Voltage": {"device_class": "voltage", "unit": "V"},
-        "PFC0 Voltage": {"device_class": "voltage", "unit": "V"},
-        "PFC1 Voltage": {"device_class": "voltage", "unit": "V"},
-        "Panel Board Temperature": {"device_class": "temperature", "unit": "°C"},
-        "Voltage Phase A": {"device_class": "voltage", "unit": "V"},
-        "Voltage Phase B": {"device_class": "voltage", "unit": "V"},
-        "Voltage Phase C": {"device_class": "voltage", "unit": "V"},
-        "Temperature of PFC Board": {"device_class": "temperature", "unit": "°C"},
-        "Input Power": {"device_class": "power", "unit": "W"},
-        "Current Altitude": {"device_class": "none", "unit": "m"},
-        "Input Working Mode": {"device_class": "none", "unit": None},
-        "Alarm Status": {"device_class": "none", "unit": None}
-    }
-
-    for param, details in parameters.items():
+    for param, details in READ_PARAMETER_MAP.items():
         discovery_payload = {
             "name": param,
             "unique_id": f"victron_{CERBO_SERIAL_NO}_{param.replace(' ', '_').lower()}",
@@ -167,28 +165,28 @@ def ha_discovery():
         ha_mqtt_client.publish(discovery_topic, json.dumps(discovery_payload), retain=True)
 
     # Define settable parameters as MQTT number entities
-    settable_parameters = {
-        "Current Limit": {"min": 0, "max": 1, "step": 0.1, "unit": "A", "command_topic": f"{HA_MQTT_BASE_TOPIC}/{CERBO_SERIAL_NO}/set/current_limit"},
-        "Output Voltage": {"min": 735, "max": 810, "step": 0.1, "unit": "V", "command_topic": f"{HA_MQTT_BASE_TOPIC}/{CERBO_SERIAL_NO}/set/output_voltage"},
-        "Output Current": {"min": 0, "max": 1, "step": 0.1, "unit": "A", "command_topic": f"{HA_MQTT_BASE_TOPIC}/{CERBO_SERIAL_NO}/set/current"},
-        "Altitude": {"min": 0, "max": 5000, "step": 100, "unit": "m", "command_topic": f"{HA_MQTT_BASE_TOPIC}/{CERBO_SERIAL_NO}/set/altitude"},
-    }
+    # settable_parameters = {
+    #     "Current Limit": {"min": 0, "max": 1, "step": 0.1, "unit": "A", "command_topic": f"{HA_MQTT_BASE_TOPIC}/{CERBO_SERIAL_NO}/set/current_limit"},
+    #     "Output Voltage": {"min": 735, "max": 810, "step": 0.1, "unit": "V", "command_topic": f"{HA_MQTT_BASE_TOPIC}/{CERBO_SERIAL_NO}/set/output_voltage"},
+    #     "Output Current": {"min": 0, "max": 1, "step": 0.1, "unit": "A", "command_topic": f"{HA_MQTT_BASE_TOPIC}/{CERBO_SERIAL_NO}/set/current"},
+    #     "Altitude": {"min": 0, "max": 5000, "step": 100, "unit": "m", "command_topic": f"{HA_MQTT_BASE_TOPIC}/{CERBO_SERIAL_NO}/set/altitude"},
+    # }
 
-    # Publish discovery messages for settable parameters
-    for param, details in settable_parameters.items():
-        discovery_payload = {
-            "name": param,
-            "unique_id": f"victron_{CERBO_SERIAL_NO}_{param.replace(' ', '_').lower()}",
-            "command_topic": details["command_topic"],
-            "min": details["min"],
-            "max": details["max"],
-            "step": details["step"],
-            "unit_of_measurement": details["unit"],
-            "availability_topic": availability_topic,
-            "device": device
-        }
-        discovery_topic = f"{HA_MQTT_DISCOVERY_TOPIC}/number/victron_{CERBO_SERIAL_NO}/{param.replace(' ', '_').lower()}/config"
-        ha_mqtt_client.publish(discovery_topic, json.dumps(discovery_payload), retain=True)
+    # # Publish discovery messages for settable parameters
+    # for param, details in settable_parameters.items():
+    #     discovery_payload = {
+    #         "name": param,
+    #         "unique_id": f"victron_{CERBO_SERIAL_NO}_{param.replace(' ', '_').lower()}",
+    #         "command_topic": details["command_topic"],
+    #         "min": details["min"],
+    #         "max": details["max"],
+    #         "step": details["step"],
+    #         "unit_of_measurement": details["unit"],
+    #         "availability_topic": availability_topic,
+    #         "device": device
+    #     }
+    #     discovery_topic = f"{HA_MQTT_DISCOVERY_TOPIC}/number/victron_{CERBO_SERIAL_NO}/{param.replace(' ', '_').lower()}/config"
+    #     ha_mqtt_client.publish(discovery_topic, json.dumps(discovery_payload), retain=True)
 
 
     ha_mqtt_client.publish(availability_topic, "online")

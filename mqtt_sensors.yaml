@@ -1,0 +1,1252 @@
+number:
+  - unique_id: min_soc_limit
+    name: Minimum SOC Limit
+    min: 20
+    max: 100
+    step: 5
+    mode: slider
+    command_topic: "victron-home/W/c0847d9b49b3/settings/0/Settings/CGwacs/BatteryLife/MinimumSocLimit"
+    command_template: '{"value": {{ value }} }'
+    state_topic: "victron-home/N/c0847d9b49b3/settings/0/Settings/CGwacs/BatteryLife/MinimumSocLimit"
+    value_template: "{{ value_json.value | round(0) }}"
+    device_class: battery
+    icon: mdi:battery-heart-outline
+    unit_of_measurement: '%'
+    device: &cerbo_device
+      identifiers:
+        - "Victron Cerbo GX"
+      manufacturer: "Victron Energy"
+      model: "Cerbo GX"
+      name: "Cerbo GX"
+
+sensor:
+  - state_topic: "victron-home/N/c0847d9b49b3/grid/30/Ac/Energy/Forward"
+    name: "Grid energy meter import"
+    device_class: energy
+    state_class: total_increasing
+    value_template: '{{ value_json.value|float(0)|round(0) }}'
+    unit_of_measurement: "kWh"
+    unique_id: "grid_meter_import"
+    device: &grid_meter_device
+      identifiers:
+        - "Victron Grid Meter"
+      manufacturer: "Victron Energy"
+      model: "ET340"
+      name: "Victron Grid Meter"
+
+  - state_topic: "victron-home/N/c0847d9b49b3/grid/30/Ac/Energy/Reverse"
+    name: "Grid energy meter export"
+    device_class: energy
+    state_class: total_increasing
+    value_template: '{{ value_json.value|float(0)|round(0) }}'
+    unit_of_measurement: "kWh"
+    unique_id: "grid_meter_export"
+    device: *grid_meter_device
+
+  - state_topic: "victron-home/N/c0847d9b49b3/system/0/Dc/Battery/Soc"
+    name: "Battery Percent"
+    unique_id: "victron_battery_soc"
+    device_class: battery
+    unit_of_measurement: "%"
+    value_template: '{{ value_json.value|float(0)|round(0) }}'
+    device: *cerbo_device
+
+  - state_topic: victron-home/N/c0847d9b49b3/settings/0/Settings/CGwacs/BatteryLife/SocLimit
+    name: Active SOC Limit
+    device_class: battery
+    value_template: '{{ value_json.value|float(0)|round(0) }}'
+    unit_of_measurement: '%'
+    unique_id: active_soc_limit 
+    device: *cerbo_device
+
+  - state_topic: victron-home/N/c0847d9b49b3/system/0/Dc/Battery/Voltage
+    name: Battery Voltage
+    unique_id: victron_battery_voltage
+    device_class: voltage
+    value_template: '{{ value_json.value|float(0)|round(2) }}'
+    unit_of_measurement: V
+    device: *cerbo_device 
+
+  - state_topic: victron-home/N/c0847d9b49b3/system/0/Dc/Battery/Power
+    name: Battery Load
+    unique_id: victron_battery_load
+    device_class: power
+    value_template: '{{ value_json.value|float(0)|round(0) }}'
+    unit_of_measurement: W
+    device: *cerbo_device 
+  
+  - state_topic: victron-home/N/c0847d9b49b3/system/0/Ac/Consumption/L1/Power
+    name: AC Loads - Phase 1
+    device_class: power
+    value_template: '{{ value_json.value|round(0)}}'
+    unit_of_measurement: W
+    icon: 'mdi:power-socket-uk'
+    unique_id: victron_acload_l1
+    device: *cerbo_device 
+
+  - state_topic: victron-home/N/c0847d9b49b3/vebus/276/Ac/Out/L1/V
+    name: AC Output Voltage - Phase 1
+    device_class: voltage
+    value_template: "{{ (value_json.value | float(default=0) | round(1)) if value_json is defined and value_json.value is not none else 0 }}"
+    unit_of_measurement: V
+    unique_id: Victron_AC_Output_Voltage_L1
+    device: &inverter_device
+      identifiers:
+        - "Victron Quattro 48/10000"
+      manufacturer: "Victron Energy"
+      model: "Quattro 48/10000"
+      name: "Victron Inverter" 
+
+  - state_topic: victron-home/N/c0847d9b49b3/vebus/276/Ac/Out/L1/I
+    name: AC Output Current - Phase 1
+    device_class: current
+    value_template: "{{ (value_json.value | float(default=0) | round(1)) if value_json is defined and value_json.value is not none else 0 }}"
+    unit_of_measurement: A
+    unique_id: Victron_AC_Output_Current_L1
+    device: *inverter_device 
+  
+  - state_topic: victron-home/N/c0847d9b49b3/system/0/Ac/Consumption/L2/Power
+    name: AC Loads - Phase 2
+    device_class: power
+    value_template: '{{ value_json.value | round(0) }}'
+    unit_of_measurement: W
+    icon: 'mdi:power-socket-uk'
+    unique_id: victron_acload_l2
+    device: *inverter_device 
+
+  - state_topic: victron-home/N/c0847d9b49b3/vebus/276/Ac/Out/L2/V
+    name: AC Output Voltage - Phase 2
+    device_class: voltage
+    value_template: "{{ (value_json.value | float(default=0) | round(1)) if value_json is defined and value_json.value is not none else 0 }}"
+    unit_of_measurement: V
+    unique_id: Victron_AC_Output_Voltage_L2
+    device: *inverter_device 
+
+  - state_topic: victron-home/N/c0847d9b49b3/vebus/276/Ac/Out/L2/I
+    name: AC Output Current - Phase 2
+    device_class: current
+    value_template: "{{ (value_json.value | float(default=0) | round(1)) if value_json is defined and value_json.value is not none else 0 }}"
+    unit_of_measurement: A
+    unique_id: Victron_AC_Output_Current_L2
+    device: *inverter_device 
+
+  - state_topic: victron-home/N/c0847d9b49b3/system/0/Ac/Consumption/L3/Power
+    name: AC Loads - Phase 3
+    device_class: power
+    value_template: '{{ value_json.value | round(0) }}'
+    unit_of_measurement: W
+    icon: 'mdi:power-socket-uk'
+    unique_id: victron_acload_l3
+    device: *cerbo_device 
+  
+  - state_topic: victron-home/N/c0847d9b49b3/vebus/276/Ac/Out/L3/V
+    name: AC Output Voltage - Phase 3
+    device_class: voltage
+    value_template: "{{ (value_json.value | float(default=0) | round(1)) if value_json is defined and value_json.value is not none else 0 }}"
+    unit_of_measurement: V
+    unique_id: Victron_AC_Output_Voltage_L3
+    device: *inverter_device 
+
+  - state_topic: victron-home/N/c0847d9b49b3/vebus/276/Ac/Out/L3/I
+    name: AC Output Current - Phase 3
+    device_class: current
+    value_template: "{{ (value_json.value | float(default=0) | round(1)) if value_json is defined and value_json.value is not none else 0 }}"
+    unit_of_measurement: A
+    unique_id: Victron_AC_Output_Current_L3
+    device: *inverter_device
+
+  - state_topic: victron-home/N/c0847d9b49b3/system/0/Ac/Grid/L1/Power
+    name: Grid Power - Phase 1
+    device_class: power
+    value_template: |-
+      {% if value_json is defined and value_json.value is not none %}
+        {{ value_json.value | round(0) }}
+      {% else %}
+        0
+      {% endif %}
+    unit_of_measurement: W
+    icon: 'mdi:power-socket-uk'
+    unique_id: Victron_Grid_L1
+    device: *cerbo_device 
+  
+  - state_topic: victron-home/N/c0847d9b49b3/system/0/Ac/Grid/L2/Power
+    name: Grid Power - Phase 2
+    device_class: power
+    value_template: |-
+      {% if value_json is defined and value_json.value is not none %}
+        {{ value_json.value | round(0) }}
+      {% else %}
+        0
+      {% endif %}
+    unit_of_measurement: W
+    icon: 'mdi:power-socket-uk'
+    unique_id: Victron_Grid_L2
+    device: *cerbo_device 
+  
+  - state_topic: victron-home/N/c0847d9b49b3/system/0/Ac/Grid/L3/Power
+    name: Grid Power - Phase 3
+    device_class: power
+    value_template: |-
+      {% if value_json is defined and value_json.value is not none %}
+        {{ value_json.value | round(0) }}
+      {% else %}
+        0
+      {% endif %}
+    unit_of_measurement: W
+    icon: 'mdi:power-socket-uk'
+    unique_id: Victron_Grid_L3
+    device: *cerbo_device 
+  
+  - state_topic: victron-home/N/c0847d9b49b3/grid/30/Ac/Power
+    name: Grid Power Total
+    device_class: power
+    value_template: "{{ (value_json.value | float(default=0) | round(1)) if value_json is defined and value_json.value is not none else 0 }}"
+    unit_of_measurement: W
+    icon: 'mdi:power-socket-uk'
+    unique_id: Victron_Grid_Power_Tot
+    device: *grid_meter_device 
+
+  - state_topic: victron-home/N/c0847d9b49b3/grid/30/Ac/L1/Voltage
+    name: Grid Voltage - Phase 1
+    device_class: voltage
+    value_template: "{{ (value_json.value | float(default=0) | round(1)) if value_json is defined and value_json.value is not none else 0 }}"
+    unit_of_measurement: V
+    unique_id: Victron_Grid_Voltage_L1
+    device: *grid_meter_device
+
+  - state_topic: victron-home/N/c0847d9b49b3/grid/30/Ac/L2/Voltage
+    name: Grid Voltage - Phase 2
+    device_class: voltage
+    value_template: "{{ (value_json.value | float(default=0) | round(1)) if value_json is defined and value_json.value is not none else 0 }}"
+    unit_of_measurement: V
+    unique_id: Victron_Grid_Voltage_L2
+    device: *grid_meter_device 
+
+  - state_topic: victron-home/N/c0847d9b49b3/grid/30/Ac/L3/Voltage
+    name: Grid Voltage - Phase 3
+    device_class: voltage
+    value_template: "{{ (value_json.value | float(default=0) | round(1)) if value_json is defined and value_json.value is not none else 0 }}"
+    unit_of_measurement: V
+    unique_id: Victron_Grid_Voltage_L3
+    device: *grid_meter_device 
+
+  - state_topic: victron-home/N/c0847d9b49b3/grid/30/Ac/L1/Current
+    name: Grid Current - Phase 1
+    device_class: current
+    value_template: "{{ (value_json.value | float(default=0) | round(1)) if value_json is defined and value_json.value is not none else 0 }}"
+    unit_of_measurement: A
+    unique_id: Victron_Grid_Curent_L1
+    device: *grid_meter_device 
+
+  - state_topic: victron-home/N/c0847d9b49b3/grid/30/Ac/L2/Current
+    name: Grid Current - Phase 2
+    device_class: current
+    value_template: "{{ (value_json.value | float(default=0) | round(1)) if value_json is defined and value_json.value is not none else 0 }}"
+    unit_of_measurement: A
+    unique_id: Victron_Grid_Curent_L2
+    device: *grid_meter_device 
+
+  - state_topic: victron-home/N/c0847d9b49b3/grid/30/Ac/L3/Current
+    name: Grid Current - Phase 3
+    device_class: current
+    value_template: "{{ (value_json.value | float(default=0) | round(1)) if value_json is defined and value_json.value is not none else 0 }}"
+    unit_of_measurement: A
+    unique_id: Victron_Grid_Curent_L3
+    device: *grid_meter_device 
+
+  - state_topic: victron-home/N/c0847d9b49b3/system/0/Dc/Pv/Power
+    name: Current Solar Production
+    device_class: power
+    state_class: measurement
+    value_template: '{{ value_json.value|float(0)|round(0) }}'
+    unit_of_measurement: W
+    icon: 'mdi:solar-power'
+    unique_id: Current_SolarPower
+    device: *cerbo_device 
+
+  - state_topic: victron-home/N/c0847d9b49b3/solarcharger/0/Yield/Power
+    name: MPPT 0 Production
+    device_class: power
+    value_template: '{{ value_json.value|float(0)|round(0) }}'
+    unit_of_measurement: W
+    icon: 'mdi:solar-power'
+    unique_id: mppt_0_power
+    device: &mppt_device0
+      identifiers:
+        - "Victron MPPT 0"
+      manufacturer: "Victron Energy"
+      model: "MPPT 250-100"
+      name: "Victron MPPT 1"
+
+  - state_topic: victron-home/N/c0847d9b49b3/solarcharger/0/Dc/0/Voltage
+    name: MPPT 0 Voltage
+    device_class: voltage
+    value_template: "{{ (value_json.value | float(default=0) | round(1)) if value_json is defined and value_json.value is not none else 0 }}"
+    unit_of_measurement: V
+    unique_id: mppt_0_voltage  
+    device: *mppt_device0 
+
+  - state_topic: victron-home/N/c0847d9b49b3/solarcharger/0/Dc/0/Current
+    name: MPPT 0 Current
+    device_class: current
+    value_template: "{{ (value_json.value | float(default=0) | round(1)) if value_json is defined and value_json.value is not none else 0 }}"
+    unit_of_measurement: A
+    unique_id: mppt_0_current
+    device: *mppt_device0 
+
+  - state_topic: victron-home/N/c0847d9b49b3/solarcharger/277/Yield/Power
+    name: MPPT 277 Production
+    device_class: power
+    value_template: '{{ value_json.value|float(0)|round(0) }}'
+    unit_of_measurement: W
+    icon: 'mdi:solar-power'
+    unique_id: mppt_277_power
+    device: &mppt_device277
+      identifiers:
+        - "Victron MPPT 270"
+      manufacturer: "Victron Energy"
+      model: "MPPT 250-100"
+      name: "Victron MPPT 2"
+
+  - state_topic: victron-home/N/c0847d9b49b3/solarcharger/277/Dc/0/Voltage
+    name: MPPT 277 Voltage
+    device_class: voltage
+    value_template: "{{ (value_json.value | float(default=0) | round(1)) if value_json is defined and value_json.value is not none else 0 }}"
+    unit_of_measurement: V
+    unique_id: mppt_277_voltage  
+    device: *mppt_device277 
+
+  - state_topic: victron-home/N/c0847d9b49b3/solarcharger/277/Dc/0/Current
+    name: MPPT 277 Current
+    device_class: current
+    value_template: "{{ (value_json.value | float(default=0) | round(1)) if value_json is defined and value_json.value is not none else 0 }}"
+    unit_of_measurement: A
+    unique_id: mppt_277_current
+    device: *mppt_device277 
+
+  - state_topic: victron-home/N/c0847d9b49b3/solarcharger/280/Yield/Power
+    name: MPPT 280 Production
+    device_class: power
+    value_template: '{{ value_json.value|float(0)|round(0) }}'
+    unit_of_measurement: W
+    icon: 'mdi:solar-power'
+    unique_id: mppt_280_power
+    device: &mppt_device280
+      identifiers:
+        - "Victron MPPT 280"
+      manufacturer: "Victron Energy"
+      model: "MPPT 250-100"
+      name: "Victron MPPT 3"
+
+  - state_topic: victron-home/N/c0847d9b49b3/solarcharger/280/Dc/0/Voltage
+    name: MPPT 280 Voltage
+    device_class: voltage
+    value_template: "{{ (value_json.value | float(default=0) | round(1)) if value_json is defined and value_json.value is not none else 0 }}"
+    unit_of_measurement: V
+    unique_id: mppt_280_voltage
+    device: *mppt_device280
+
+  - state_topic: victron-home/N/c0847d9b49b3/solarcharger/280/Dc/0/Current
+    name: MPPT 280 Current
+    device_class: current
+    value_template: "{{ (value_json.value | float(default=0) | round(1)) if value_json is defined and value_json.value is not none else 0 }}"
+    unit_of_measurement: A
+    unique_id: mppt_280_current
+    device: *mppt_device280
+
+  - state_topic: victron-home/N/c0847d9b49b3/solarcharger/281/Yield/Power
+    name: MPPT 281 Production
+    device_class: power
+    value_template: '{{ value_json.value|float(0)|round(0) }}'
+    unit_of_measurement: W
+    icon: 'mdi:solar-power'
+    unique_id: mppt_281_power
+    device: &mppt_device281
+      identifiers:
+        - "Victron MPPT 281"
+      manufacturer: "Victron Energy"
+      model: "MPPT 250-60"
+      name: "Victron MPPT 4"
+
+  - state_topic: victron-home/N/c0847d9b49b3/solarcharger/281/Dc/0/Voltage
+    name: MPPT 281 Voltage
+    device_class: voltage
+    value_template: "{{ (value_json.value | float(default=0) | round(1)) if value_json is defined and value_json.value is not none else 0 }}"
+    unit_of_measurement: V
+    unique_id: mppt_281_voltage
+    device: *mppt_device281
+
+  - state_topic: victron-home/N/c0847d9b49b3/solarcharger/281/Dc/0/Current
+    name: MPPT 281 Current
+    device_class: current
+    value_template: "{{ (value_json.value | float(default=0) | round(1)) if value_json is defined and value_json.value is not none else 0 }}"
+    unit_of_measurement: A
+    unique_id: mppt_281_current
+    device: *mppt_device281
+
+  - state_topic: victron-home/N/c0847d9b49b3/solarcharger/277/State
+    name: Solar Charger State 277
+    value_template: >
+      {% if value_json is defined and value_json.value is defined %}
+        {% if value_json.value == 0 %}
+          Off
+        {% elif value_json.value == 2 %}
+          Fault
+        {% elif value_json.value == 3 %}
+          Bulk
+        {% elif value_json.value == 4 %}
+          Absorption
+        {% elif value_json.value == 5 %}
+          Float
+        {% elif value_json.value == 6 %}
+          Storage
+        {% elif value_json.value == 7 %}
+          Equalize
+        {% elif value_json.value == 11 %}
+          Other (Hub-1)
+        {% elif value_json.value == 252 %}
+          External control
+        {% else %}
+          Error - No Data
+        {% endif %}
+      {% else %}
+        Waiting for Data
+      {% endif %}
+    unique_id: Victron_MPPT_State_277
+    device: *mppt_device277  
+
+  - state_topic: victron-home/N/c0847d9b49b3/solarcharger/280/State
+    name: Solar Charger State 280
+    value_template: >
+      {% if value_json is defined and value_json.value is defined %}
+        {% if value_json.value == 0 %}
+          Off
+        {% elif value_json.value == 252 %}
+          External control
+        {% elif value_json.value == 2 %}
+          Fault
+        {% elif value_json.value == 3 %}
+          Bulk
+        {% elif value_json.value == 4 %}
+          Absorption
+        {% elif value_json.value == 5 %}
+          Float
+        {% elif value_json.value == 6 %}
+          Storage
+        {% elif value_json.value == 7 %}
+          Equalize
+        {% elif value_json.value == 11 %}
+          Other (Hub-1)
+        {% else %}
+          Error - No Data
+        {% endif %}
+      {% else %}
+        Waiting for Data
+      {% endif %}     
+    unique_id: Victron_MPPT_State_280
+    device: *mppt_device280
+
+  - state_topic: victron-home/N/c0847d9b49b3/solarcharger/281/State
+    name: Solar Charger State 281
+    value_template: >
+      {% if value_json is defined and value_json.value is defined %}
+        {% if value_json.value == 0 %}
+          Off
+        {% elif value_json.value == 2 %}
+          Fault
+        {% elif value_json.value == 3 %}
+          Bulk
+        {% elif value_json.value == 4 %}
+          Absorption
+        {% elif value_json.value == 5 %}
+          Float
+        {% elif value_json.value == 6 %}
+          Storage
+        {% elif value_json.value == 7 %}
+          Equalize
+        {% elif value_json.value == 11 %}
+          Other (Hub-1)
+        {% elif value_json.value == 252 %}
+          External control
+        {% else %}
+          Error - No Data
+        {% endif %}
+      {% else %}
+        Waiting for Data
+      {% endif %}     
+    unique_id: Victron_MPPT_State_281
+    device: *mppt_device281
+
+  - state_topic: victron-home/N/c0847d9b49b3/system/0/Ac/ActiveIn/Source
+    name: Active input source
+    unique_id: active_input
+    value_template: >
+      {% if value_json is defined and value_json.value is defined %}
+        {% if value_json.value == 0 %}
+          Unknown
+        {% elif value_json.value == 1 %}
+          Connected
+        {% elif value_json.value == 2 %}
+          Generator
+        {% elif value_json.value == 3 %}
+          Shore power
+        {% elif value_json.value == 240 %}
+          Disconnected
+        {% else %}
+          Error - No Data
+        {% endif %}
+      {% else %}
+        Waiting for Data
+      {% endif %}
+    device: *cerbo_device 
+
+  - state_topic: victron-home/N/c0847d9b49b3/system/0/SystemState/State
+    name: Inverter State
+    value_template: >
+      {% if value_json is defined and value_json.value is defined %}
+        {% if value_json.value == 0 %}
+          Off
+        {% elif value_json.value == 252 %}
+          External control
+        {% elif value_json.value == 1 %}
+          Low Power
+        {% elif value_json.value == 2 %}
+          Fault
+        {% elif value_json.value == 3 %}
+          Bulk
+        {% elif value_json.value == 4 %}
+          Absorption
+        {% elif value_json.value == 5 %}
+          Float
+        {% elif value_json.value == 6 %}
+          Storage
+        {% elif value_json.value == 7 %}
+          Equalize
+        {% elif value_json.value == 8 %}
+          Passthru
+        {% elif value_json.value == 9 %}
+          Inverting
+        {% elif value_json.value == 10 %}
+          Power assist
+        {% elif value_json.value == 11 %}
+          Power supply mode
+        {% else %}
+          Error - No Data
+        {% endif %}
+      {% else %}
+        Waiting for Data
+      {% endif %}
+    unique_id: Victron_Quattro_State
+    device: *cerbo_device   
+
+  - state_topic: solarmd/energy/outputEnergy/bank1
+    name: SMD Total Battery Capacity
+    device_class: battery
+    unit_of_measurement: '%'
+    value_template: '{{ value_json.capacityP | round(0) }}'
+    unique_id: SMD_bank_capacity
+  
+  - state_topic: solarmd/power/outputPower/bank1-dischargingPower
+    name: SMD Battery Discharge Power
+    value_template: '{{ value_json.powerW|round(0) }}'
+    device_class: power   
+    state_class: measurement
+    unit_of_measurement: W
+    unique_id: SMD_discharge_power
+  
+  - state_topic: solarmd/energy/outputEnergy/bank1
+    name: SMD Battery Power In
+    device_class: power   
+    state_class: measurement    
+    unit_of_measurement: W
+    value_template: '{{ value_json.powerW | round(0) }}'
+    unique_id: SMD_power_in
+  
+  - state_topic: solarmd/energy/outputEnergy/bank1
+    name: Remaining Battery Capacity
+    device_class: energy_storage
+    unit_of_measurement: Wh
+    value_template: '{{ (value_json.capacityAh * 51.2) | round(0) }}'
+    unique_id: remaining_battery_capacity
+  
+  - state_topic: "solarmd/energy/inputEnergy/SMDBEM10303621 "
+    name: Battery1 SOC
+    unique_id: battery1_soc   
+    device_class: battery
+    unit_of_measurement: '%'
+    value_template: '{{ value_json.capacityP | round(0) }}'
+  
+  - state_topic: "solarmd/energy/inputEnergy/SMDBEM10303673 "
+    name: Battery2 SOC
+    unique_id: battery2_soc
+    device_class: battery
+    unit_of_measurement: '%'
+    value_template: '{{ value_json.capacityP | round(0) }}'
+  
+  - state_topic: "solarmd/energy/inputEnergy/SMDBEM10303471 "
+    name: Battery3 SOC
+    unique_id: battery3_soc
+    device_class: battery
+    unit_of_measurement: '%'
+    value_template: '{{ value_json.capacityP | round(0) }}'
+  
+  - state_topic: "solarmd/energy/inputEnergy/SMDBEM10303453 "
+    name: Battery4 SOC
+    unique_id: battery4_soc
+    device_class: battery
+    unit_of_measurement: '%'
+    value_template: '{{ value_json.capacityP | round(0) }}'
+  
+  - state_topic: "solarmd/energy/inputEnergy/SMDBEX20226624 "
+    name: Battery5 SOC
+    unique_id: battery5_soc
+    device_class: battery
+    unit_of_measurement: '%'
+    value_template: '{{ value_json.capacityP | round(0) }}'
+
+  - state_topic: "solarmd/energy/inputEnergy/SMDBEM10303621 "
+    name: SMD Battery1 Capacity
+    unique_id: smd_battery1_capacity
+    unit_of_measurement: Ah
+    value_template: '{{ value_json.capacityAh | round(2) }}'
+  
+  - state_topic: "solarmd/energy/inputEnergy/SMDBEM10303673 "
+    name: SMD Battery2 Capacity
+    unique_id: smd_battery2_capacity
+    unit_of_measurement: Ah
+    value_template: '{{ value_json.capacityAh | round(2) }}'
+  
+  - state_topic: "solarmd/energy/inputEnergy/SMDBEM10303471 "
+    name: SMD Battery3 Capacity
+    unique_id: smd_battery3_capacity
+    unit_of_measurement: Ah
+    value_template: '{{ value_json.capacityAh | round(2) }}'
+  
+  - state_topic: "solarmd/energy/inputEnergy/SMDBEM10303453 "
+    name: SMD Battery4 Capacity
+    unique_id: smd_battery4_capacity
+    unit_of_measurement: Ah
+    value_template: '{{ value_json.capacityAh | round(2) }}'
+
+  - state_topic: "solarmd/energy/inputEnergy/SMDBEX20226624 "
+    name: SMD Battery5 Capacity
+    unique_id: smd_battery5_capacity
+    unit_of_measurement: Ah
+    value_template: '{{ value_json.capacityAh | round(2) }}'
+
+  - state_topic: "solarmd/energy/inputEnergy/SMDBEM10303621 "
+    name: SMD Battery1 Power
+    device_class: power
+    unit_of_measurement: W
+    value_template: '{{ value_json.powerW | round(2) }}'
+    unique_id: battery1_power
+
+  - state_topic: "solarmd/energy/inputEnergy/SMDBEM10303621 "
+    name: SMD Battery1 Current
+    device_class: current
+    unit_of_measurement: A
+    value_template: '{{ value_json.currentA | round(2) }}'
+    unique_id: battery1_current
+
+  - state_topic: "solarmd/energy/inputEnergy/SMDBEM10303621 "
+    name: SMD Battery1 Voltage
+    device_class: voltage
+    unit_of_measurement: V
+    value_template: '{{ value_json.voltageV | round(2) }}'
+    unique_id: battery1_voltage
+
+  - state_topic: "solarmd/energy/inputEnergy/SMDBEM10303673 "
+    name: SMD Battery2 Power
+    device_class: power
+    unit_of_measurement: W
+    value_template: '{{ value_json.powerW | round(2) }}'
+    unique_id: battery2_power
+
+  - state_topic: "solarmd/energy/inputEnergy/SMDBEM10303673 "
+    name: SMD Battery2 Current
+    device_class: current
+    unit_of_measurement: A
+    value_template: '{{ value_json.currentA | round(2) }}'
+    unique_id: battery2_current
+
+  - state_topic: "solarmd/energy/inputEnergy/SMDBEM10303673 "
+    name: SMD Battery2 Voltage
+    device_class: voltage
+    unit_of_measurement: V
+    value_template: '{{ value_json.voltageV | round(2) }}'
+    unique_id: battery2_voltage
+
+  - state_topic: "solarmd/energy/inputEnergy/SMDBEM10303471 "
+    name: SMD Battery3 Power
+    device_class: power
+    unit_of_measurement: W
+    value_template: '{{ value_json.powerW | round(2) }}'
+    unique_id: battery3_power
+
+  - state_topic: "solarmd/energy/inputEnergy/SMDBEM10303471 "
+    name: SMD Battery3 Current
+    device_class: current
+    unit_of_measurement: A
+    value_template: '{{ value_json.currentA | round(2) }}'
+    unique_id: battery3_current
+
+  - state_topic: "solarmd/energy/inputEnergy/SMDBEM10303471 "
+    name: SMD Battery3 Voltage
+    device_class: voltage
+    unit_of_measurement: V
+    value_template: '{{ value_json.voltageV | round(2) }}'
+    unique_id: battery3_voltage
+
+  - state_topic: "solarmd/energy/inputEnergy/SMDBEM10303453 "
+    name: SMD Battery4 Power
+    device_class: power
+    unit_of_measurement: W
+    value_template: '{{ value_json.powerW | round(2) }}'
+    unique_id: battery4_power
+
+  - state_topic: "solarmd/energy/inputEnergy/SMDBEM10303453 "
+    name: SMD Battery4 Current
+    device_class: current
+    unit_of_measurement: A
+    value_template: '{{ value_json.currentA | round(2) }}'
+    unique_id: battery4_current
+    
+  - state_topic: "solarmd/energy/inputEnergy/SMDBEM10303453 "
+    name: SMD Battery4 Voltage
+    device_class: voltage
+    unit_of_measurement: V
+    value_template: '{{ value_json.voltageV | round(2) }}'
+    unique_id: battery4_voltage
+
+  - state_topic: "solarmd/energy/inputEnergy/SMDBEX20226624 "
+    name: SMD Battery5 Power
+    device_class: power
+    unit_of_measurement: W
+    value_template: '{{ value_json.powerW | round(2) }}'
+    unique_id: battery5_power
+
+  - state_topic: "solarmd/energy/inputEnergy/SMDBEX20226624 "
+    name: SMD Battery5 Current
+    device_class: current
+    unit_of_measurement: A
+    value_template: '{{ value_json.currentA | round(2) }}'
+    unique_id: battery5_current
+    
+  - state_topic: "solarmd/energy/inputEnergy/SMDBEX20226624 "
+    name: SMD Battery5 Voltage
+    device_class: voltage
+    unit_of_measurement: V
+    value_template: '{{ value_json.voltageV | round(2) }}'
+    unique_id: battery5_voltage
+
+  - state_topic: "solarmd/energy/inputEnergy/SMDBEM10303621 "
+    name: Battery1 Max Cell Voltage
+    unique_id: battery1_max_cell_voltage
+    device_class: voltage 
+    state_class: measurement
+    unit_of_measurement: V
+    icon: mdi:sine-wave
+    value_template: '{{ value_json.a | max | round(3) }}'
+  
+  - state_topic: "solarmd/energy/inputEnergy/SMDBEM10303621 "
+    name: Battery1 Min Cell Voltage
+    unique_id: battery1_min_cell_voltage
+    device_class: voltage 
+    state_class: measurement
+    unit_of_measurement: V
+    icon: mdi:sine-wave
+    value_template: '{{ value_json.a | min | round(3) }}'
+  
+  - state_topic: "solarmd/energy/inputEnergy/SMDBEM10303673 "
+    name: Battery2 Max Cell Voltage
+    unique_id: battery2_max_cell_voltage
+    device_class: voltage 
+    state_class: measurement
+    unit_of_measurement: V
+    icon: mdi:sine-wave
+    value_template: '{{ value_json.a | max | round(3) }}'
+  
+  - state_topic: "solarmd/energy/inputEnergy/SMDBEM10303673 "
+    name: Battery2 Min Cell Voltage
+    unique_id: battery2_min_cell_voltage
+    device_class: voltage 
+    state_class: measurement
+    unit_of_measurement: V
+    icon: mdi:sine-wave
+    value_template: '{{ value_json.a | min | round(3) }}'
+  
+  - state_topic: "solarmd/energy/inputEnergy/SMDBEM10303471 "
+    name: Battery3 Max Cell Voltage
+    unique_id: battery3_max_cell_voltage
+    device_class: voltage 
+    state_class: measurement
+    unit_of_measurement: V
+    icon: mdi:sine-wave
+    value_template: '{{ value_json.a | max | round(3) }}'
+  
+  - state_topic: "solarmd/energy/inputEnergy/SMDBEM10303471 "
+    name: Battery3 Min Cell Voltage
+    unique_id: battery3_min_cell_voltage
+    device_class: voltage 
+    state_class: measurement
+    unit_of_measurement: V
+    icon: mdi:sine-wave
+    value_template: '{{ value_json.a | min | round(3) }}'
+  
+  - state_topic: "solarmd/energy/inputEnergy/SMDBEM10303453 "
+    name: Battery4 Max Cell Voltage
+    unique_id: battery4_max_cell_voltage
+    device_class: voltage 
+    state_class: measurement
+    unit_of_measurement: V
+    icon: mdi:sine-wave
+    value_template: '{{ value_json.a | max | round(3) }}'
+  
+  - state_topic: "solarmd/energy/inputEnergy/SMDBEM10303453 "
+    name: Battery4 Min Cell Voltage
+    unique_id: battery4_min_cell_voltage
+    device_class: voltage 
+    state_class: measurement
+    unit_of_measurement: V
+    value_template: '{{ value_json.a | min | round(3) }}'
+    icon: mdi:sine-wave    
+
+  - state_topic: "solarmd/energy/inputEnergy/SMDBEX20226624 "
+    name: Battery5 Max Cell Voltage
+    unique_id: battery5_max_cell_voltage
+    device_class: voltage 
+    state_class: measurement
+    unit_of_measurement: V
+    icon: mdi:sine-wave
+    value_template: '{{ value_json.a | max | round(3) }}'
+  
+  - state_topic: "solarmd/energy/inputEnergy/SMDBEX20226624 "
+    name: Battery5 Min Cell Voltage
+    device_class: voltage 
+    unique_id: battery5_min_cell_voltage
+    state_class: measurement
+    unit_of_measurement: V
+    icon: mdi:sine-wave
+    value_template: '{{ value_json.a | min | round(3) }}'
+
+  - state_topic: "solarmd/energy/inputEnergy/SMDBEM10303621 "
+    name: Battery1 Temperature
+    unique_id: battery1_temperature
+    device_class: temperature 
+    state_class: measurement
+    unit_of_measurement: °C
+    value_template: '{{ value_json.e[5] | round(1) }}'
+  
+  - state_topic: "solarmd/energy/inputEnergy/SMDBEM10303673 "
+    name: Battery2 Temperature
+    unique_id: battery2_temperature
+    device_class: temperature 
+    state_class: measurement
+    unit_of_measurement: °C
+    value_template: '{{ value_json.e[5] | round(1) }}'
+  
+  - state_topic: "solarmd/energy/inputEnergy/SMDBEM10303471 "
+    name: Battery3 Temperature
+    unique_id: battery3_temperature
+    device_class: temperature 
+    state_class: measurement
+    unit_of_measurement: °C
+    value_template: '{{ value_json.e[5] | round(1) }}'
+  
+  - state_topic: "solarmd/energy/inputEnergy/SMDBEM10303453 "
+    name: Battery4 Temperature
+    unique_id: battery4_temperature
+    device_class: temperature 
+    state_class: measurement
+    unit_of_measurement: °C
+    value_template: '{{ value_json.e[5] | round(1) }}'
+
+  - state_topic: "solarmd/energy/inputEnergy/SMDBEX20226624 "
+    name: Battery5 Temperature
+    unique_id: battery5_temperature
+    device_class: temperature 
+    state_class: measurement
+    unit_of_measurement: °C
+    value_template: '{{ value_json.e[5] | round(1) }}'
+
+  - state_topic: "solarmd/energy/inputEnergy/SMDBEM10303621 "
+    name: SMD Battery1 Charge Counter
+    state_class: total_increasing
+    value_template: '{{ value_json.chargeCounter | round(0) }}'
+    unique_id: battery1_charge_counter
+
+  - state_topic: "solarmd/energy/inputEnergy/SMDBEM10303621 "
+    name: SMD Battery1 Discharge Counter
+    state_class: total_increasing
+    value_template: '{{ value_json.dischargeCounter | round(0) }}'
+    unique_id: battery1_discharge_counter
+
+  - state_topic: "solarmd/energy/inputEnergy/SMDBEM10303673 "
+    name: SMD Battery2 Charge Counter
+    state_class: total_increasing
+    value_template: '{{ value_json.chargeCounter | round(0) }}'
+    unique_id: battery2_charge_counter
+
+  - state_topic: "solarmd/energy/inputEnergy/SMDBEM10303673 "
+    name: SMD Battery2 Discharge Counter
+    state_class: total_increasing
+    value_template: '{{ value_json.dischargeCounter | round(0) }}'
+    unique_id: battery2_discharge_counter
+
+  - state_topic: "solarmd/energy/inputEnergy/SMDBEM10303471 "
+    name: SMD Battery3 Charge Counter
+    state_class: total_increasing
+    value_template: '{{ value_json.chargeCounter | round(0) }}'
+    unique_id: battery3_charge_counter
+
+  - state_topic: "solarmd/energy/inputEnergy/SMDBEM10303471 "
+    name: SMD Battery3 Discharge Counter
+    state_class: total_increasing
+    value_template: '{{ value_json.dischargeCounter | round(0) }}'
+    unique_id: battery3_discharge_counter
+
+  - state_topic: "solarmd/energy/inputEnergy/SMDBEM10303453 "
+    name: SMD Battery4 Charge Counter
+    state_class: total_increasing
+    value_template: '{{ value_json.chargeCounter | round(0) }}'
+    unique_id: battery4_charge_counter
+
+  - state_topic: "solarmd/energy/inputEnergy/SMDBEM10303453 "
+    name: SMD Battery4 Discharge Counter
+    state_class: total_increasing
+    value_template: '{{ value_json.dischargeCounter | round(0) }}'
+    unique_id: battery4_discharge_counter
+
+  - state_topic: "solarmd/energy/inputEnergy/SMDBEX20226624 "
+    name: SMD Battery5 Charge Counter
+    state_class: total_increasing
+    value_template: '{{ value_json.chargeCounter | round(0) }}'
+    unique_id: battery5_charge_counter
+
+  - state_topic: "solarmd/energy/inputEnergy/SMDBEX20226624 "
+    name: SMD Battery5 Discharge Counter
+    state_class: total_increasing
+    value_template: '{{ value_json.dischargeCounter | round(0) }}'
+    unique_id: battery5_discharge_counter
+
+  - state_topic: "solarmd/energy/inputEnergy/SMDBEM10303673"
+    name: Battery2 Balancing Status
+    value_template: "{{ value_json.balansingStatus | default('unknown') }}"
+    unique_id: battery2_balancing_status
+
+  - state_topic: "solarmd/energy/inputEnergy/SMDBEM10303471"
+    name: Battery3 Balancing Status
+    value_template: "{{ value_json.balansingStatus | default('unknown') }}"
+    unique_id: battery3_balancing_status
+
+  - state_topic: "solarmd/energy/inputEnergy/SMDBEM10303453"
+    name: Battery4 Balancing Status
+    value_template: "{{ value_json.balansingStatus | default('unknown') }}"
+    unique_id: battery4_balancing_status
+
+  - state_topic: "solarmd/energy/inputEnergy/SMDBEX20226624"
+    name: Battery5 Balancing Status
+    value_template: "{{ value_json.balansingStatus | default('unknown') }}"
+    unique_id: battery5_balancing_status
+
+  - state_topic: homeassistant/sensor/battery/soh1
+    name: "Battery1 SoH"
+    icon: mdi:bottle-tonic-plus-outline
+    unit_of_measurement: "%"
+    value_template: "{{ value | float }}"
+    unique_id: "battery1_soh"
+
+  - state_topic: homeassistant/sensor/battery/soh2
+    name: "Battery2 SoH"
+    icon: mdi:bottle-tonic-plus-outline
+    unit_of_measurement: "%"
+    value_template: "{{ value | float }}"
+    unique_id: "battery2_soh"
+
+  - state_topic: homeassistant/sensor/battery/soh3
+    name: "Battery3 SoH"
+    icon: mdi:bottle-tonic-plus-outline
+    unit_of_measurement: "%"
+    value_template: "{{ value | float }}"
+    unique_id: "battery3_soh"
+
+  - state_topic: homeassistant/sensor/battery/soh4
+    name: "Battery4 SoH"
+    icon: mdi:bottle-tonic-plus-outline
+    unit_of_measurement: "%"
+    value_template: "{{ value | float }}"
+    unique_id: "battery4_soh"
+
+  - state_topic: homeassistant/sensor/battery/soh5
+    name: "Battery5 SoH"
+    icon: mdi:bottle-tonic-plus-outline
+    unit_of_measurement: "%"
+    value_template: "{{ value | float }}"
+    unique_id: "battery5_soh"
+
+  - state_topic: "homeassistant/sensor/vems/soc_profile"
+    name: "SoC Profile"
+    unique_id: "soc_profile"
+    value_template: "{{ value_json.socvalues }}"  # Extracts the socValues array
+
+  - state_topic: "homeassistant/sensor/vems/current_soc_target"
+    name: "Current SoC Target"
+    unique_id: "current_soc_target"
+    value_template: "{{ value_json }}"  # Extracts the current SoC target value
+    unit_of_measurement: "%"
+
+  - state_topic: "homeassistant/sensor/vems/current_soc_target_hour"
+    name: "Current SoC Target Hour"
+    unique_id: "current_soc_target_hour"
+    value_template: "{{ value_json }}"  # Extracts the current SoC target hour value
+
+  - state_topic: "homeassistant/sensor/vems/pv_forecast_today"
+    name: "PV Forecast Today"
+    unique_id: "pv_forecast_today"
+    value_template: "{{ value_json }}"
+    unit_of_measurement: "kWh"
+
+  - state_topic: "homeassistant/sensor/vems/pv_forecast_tomorrow"
+    name: "PV Forecast Tomorrow"
+    unique_id: "pv_forecast_tomorrow"
+    value_template: "{{ value_json }}"
+    unit_of_measurement: "kWh"
+
+  - state_topic: "homeassistant/sensor/vems/pv_remaining_today"
+    name: "PV Remaining Today"
+    unique_id: "pv_remaining_today"
+    value_template: "{{ value_json }}"
+    unit_of_measurement: "kWh"
+
+  - state_topic: "homeassistant/sensor/vems/pv_forecast_morning"
+    name: "PV Forecast Morning"
+    unique_id: "pv_forecast_morning"
+    value_template: "{{ value_json }}"
+    unit_of_measurement: "kWh"
+
+  - state_topic: "homeassistant/sensor/vems/pv_forecast_afternoon"
+    name: "PV Forecast Afternoon"
+    unique_id: "pv_forecast_afternoon"
+    value_template: "{{ value_json }}"
+    unit_of_measurement: "kWh"
+
+  - state_topic: "homeassistant/sensor/vems/solar_forecast_today/state"
+    name: "Solar Forecast Today"
+    unique_id: "solar_forecast_today"
+    json_attributes_topic: "homeassistant/sensor/vems/solar_forecast_today/attributes"
+    value_template: "forecast_data"  # Match this to the state payload
+
+  - state_topic: "homeassistant/sensor/vems/power_forecast/state"
+    name: "Power Forecast"
+    unique_id: "power_forecast"
+    json_attributes_topic: "homeassistant/sensor/vems/power_forecast/attributes"
+    value_template: "{{ value }}"
+
+  - state_topic: "homeassistant/sensor/vems/pv_forecast_power_now"
+    name: "PV Power Forecast Now"
+    unique_id: "pv_forecast_power_now"
+    value_template: "{{ value_json }}"
+    unit_of_measurement: "kW"
+
+  - state_topic: "homeassistant/sensor/vems/excess_power"
+    name: "Excess Power"
+    unique_id: "excess_power"
+    device_class: "power"
+    state_class: "measurement"
+    value_template: "{{ value }}"
+    unit_of_measurement: "W"
+
+  - state_topic: "homeassistant/sensor/vems/tou_rate"
+    name: "ToU Rate"
+    unique_id: "tou_rate"
+    value_template: "{{ value }}"
+    icon: mdi:calendar-clock
+
+# Description: The following sensors are used to display the total cost and energy consumed during peak, standard, and off-peak hours.
+  - state_topic: "homeassistant/sensor/vems/import/peak_total_cost"
+    name: "Peak Total Cost - Import"
+    unique_id: "peak_total_cost_import"
+    device_class: "monetary"
+    unit_of_measurement: "ZAR"
+    value_template: "{{ value | float }}"
+
+  - state_topic: "homeassistant/sensor/vems/import/standard_total_cost"
+    name: "Standard Total Cost - Import"
+    unique_id: "standard_total_cost_import"
+    device_class: "monetary"
+    unit_of_measurement: "ZAR"
+    value_template: "{{ value | float }}"
+
+  - state_topic: "homeassistant/sensor/vems/import/off_peak_total_cost"
+    name: "Off Peak Total Cost - Import"
+    unique_id: "off_peak_total_cost_import"
+    device_class: "monetary"
+    unit_of_measurement: "ZAR"
+    value_template: "{{ value | float }}"
+
+  - state_topic: "homeassistant/sensor/vems/import/total_cost"
+    name: "Total Cost - Import"
+    unique_id: "total_cost_import"
+    device_class: "monetary"
+    unit_of_measurement: "ZAR"
+    value_template: "{{ value | float }}"
+
+  - state_topic: "homeassistant/sensor/vems/import/peak_total_energy"
+    name: "Peak Total Energy - Import"
+    unique_id: "peak_total_energy_import"
+    unit_of_measurement: "kWh"
+    value_template: "{{ value | float }}"
+
+  - state_topic: "homeassistant/sensor/vems/import/standard_total_energy"
+    name: "Standard Total Energy - Import"
+    unique_id: "standard_total_energy_import"
+    unit_of_measurement: "kWh"
+    value_template: "{{ value | float }}"
+
+  - state_topic: "homeassistant/sensor/vems/import/off_peak_total_energy"
+    name: "Off Peak Total Energy - Import"
+    unique_id: "off_peak_total_energy_import"
+    unit_of_measurement: "kWh"
+    value_template: "{{ value | float }}"
+
+  - state_topic: "homeassistant/sensor/vems/load/peak_total_cost"
+    name: "Peak Total Cost - Load"
+    unique_id: "peak_total_cost_load"
+    device_class: "monetary"
+    unit_of_measurement: "ZAR"
+    value_template: "{{ value | float }}"
+
+  - state_topic: "homeassistant/sensor/vems/load/standard_total_cost"
+    name: "Standard Total Cost - Load"
+    unique_id: "standard_total_cost_load"
+    device_class: "monetary"
+    unit_of_measurement: "ZAR"
+    value_template: "{{ value | float }}"
+
+  - state_topic: "homeassistant/sensor/vems/load/off_peak_total_cost"
+    name: "Off Peak Total Cost - Load"
+    unique_id: "off_peak_total_cost_load"
+    device_class: "monetary"
+    unit_of_measurement: "ZAR"
+    value_template: "{{ value | float }}"
+
+  - state_topic: "homeassistant/sensor/vems/load/total_cost"
+    name: "Total Cost - Load"
+    unique_id: "total_cost_load"
+    device_class: "monetary"
+    unit_of_measurement: "ZAR"
+    value_template: "{{ value | float }}"
+
+  - state_topic: "homeassistant/sensor/vems/load/peak_total_energy"
+    name: "Peak Total Energy - Load"
+    unique_id: "peak_total_energy_load"
+    unit_of_measurement: "kWh"
+    value_template: "{{ value | float }}"
+
+  - state_topic: "homeassistant/sensor/vems/load/standard_total_energy"
+    name: "Standard Total Energy - Load"
+    unique_id: "standard_total_energy_load"
+    unit_of_measurement: "kWh"
+    value_template: "{{ value | float }}"
+
+  - state_topic: "homeassistant/sensor/vems/load/off_peak_total_energy"
+    name: "Off Peak Total Energy - Load"
+    unique_id: "off_peak_total_energy_load"
+    unit_of_measurement: "kWh"
+    value_template: "{{ value | float }}"
+  
+  - state_topic: "homeassistant/sensor/vems/soc_profile_dyn"
+    name: "SoC Profile Dynamic"
+    unique_id: "soc_profile_dynamic"
+    json_attributes_topic: "homeassistant/sensor/vems/soc_profile_dyn"
+    value_template: "{{ value_json.profile[0].timestamp }}"  # Extract the timestamp from the profile array
+
+  - state_topic: "homeassistant/sensor/vems/dynamic_soc_target"
+    name: "Dynamic SoC Target"
+    unique_id: "dynamic_soc_target"
+    device_class: "battery"
+    state_class: "measurement"
+    value_template: "{{ value }}"
+    unit_of_measurement: "%"
+
+binary_sensor:
+  - state_topic: victron-home/N/c0847d9b49b3/vebus/276/Alarms/PhaseRotation
+    name: Phase Rotation Alarm
+    payload_on: "1"
+    payload_off: "0"
+    device_class: problem
+    value_template: '{{ value_json.value }}'
+    unique_id: phase_rotation_alarm
+    device: *inverter_device
+
+  - state_topic: victron-home/N/c0847d9b49b3/vebus/276/Alarms/LowBattery
+    name: Low Battery Alarm
+    payload_on: "1"
+    payload_off: "0"
+    device_class: battery
+    value_template: '{{ value_json.value }}'
+    unique_id: low_battery_alarm
+    device: *inverter_device
+ 
+  - state_topic: victron-home/N/c0847d9b49b3/vebus/276/Alarms/Overload
+    name: Overload Alarm
+    payload_on: "1"
+    payload_off: "0"
+    device_class: problem
+    value_template: '{{ value_json.value }}'
+    unique_id: overload_alarm
+    device: *inverter_device
+ 
+  - state_topic: victron-home/N/c0847d9b49b3/vebus/276/Alarms/Ripple
+    name: Ripple Alarm
+    payload_on: "1"
+    payload_off: "0"
+    device_class: problem
+    value_template: '{{ value_json.value }}'
+    unique_id: ripple_alarm
+    device: *inverter_device
+ 
+  - state_topic: victron-home/N/c0847d9b49b3/vebus/276/Alarms/TemperatureSensor
+    name: Temperature Sensor Alarm
+    payload_on: "1"
+    payload_off: "0"
+    device_class: heat
+    value_template: '{{ value_json.value }}'
+    unique_id: temperature_sensor_alarm
+    device: *inverter_device
+ 
+  - state_topic: victron-home/N/c0847d9b49b3/vebus/276/Alarms/VoltageSensor
+    name: Voltage Sensor Alarm
+    payload_on: "1"
+    payload_off: "0"
+    device_class: problem
+    value_template: '{{ value_json.value }}'
+    unique_id: voltage_sensor_alarm
+    device: *inverter_device
+ 
+  - state_topic: victron-home/N/c0847d9b49b3/vebus/276/Alarms/HighDcCurrent
+    name: High DC Current Alarm
+    payload_on: "1"
+    payload_off: "0"
+    device_class: problem
+    value_template: '{{ value_json.value }}'
+    unique_id: high_dc_current_alarm
+    device: *inverter_device 
+ 
+  - state_topic: victron-home/N/c0847d9b49b3/vebus/276/Alarms/HighDcVoltage
+    name: High DC Voltage Alarm
+    payload_on: "1"
+    payload_off: "0"
+    device_class: problem
+    value_template: '{{ value_json.value }}'
+    unique_id: high_dc_voltage_alarm
+    device: *inverter_device 
+ 
+  - state_topic: victron-home/N/c0847d9b49b3/vebus/276/Alarms/HighTemperature
+    name: High Temperature Alarm
+    payload_on: "1"
+    payload_off: "0"
+    device_class: heat
+    value_template: '{{ value_json.value }}'
+    unique_id: high_temperature_alarm
+    device: *inverter_device
