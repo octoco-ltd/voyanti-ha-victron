@@ -49,11 +49,13 @@ ha_mqtt_connected = False
 
 
 def ha_on_connect(client, userdata, flags, rc):
+    global ha_mqtt_connected
     ha_mqtt_connected = True
     logging.info("Connected to MQTT broker")
     # Subscribe here to topics in HA that we need to listen to i.e. set SoC topic etc.
 
 def ha_on_disconnect(client, userdata, rc):
+    global ha_mqtt_connected
     ha_mqtt_connected = False
     if rc != 0:
         logging.error("Unexpected disconnection.")
@@ -87,6 +89,7 @@ def cerbo_on_disconnect(client, userdata, rc):
 
 
 def cerbo_on_message(client, userdata, msg):
+    global ha_mqtt_connected
     if ha_mqtt_connected == True:
         # Get the topic and payload
         topic = msg.topic
@@ -113,7 +116,7 @@ def cerbo_on_message(client, userdata, msg):
         else:
             print(f"Topic {topic_suffix} not found in READ_PARAMETER_MAP")
     else:
-        print("Cerbo not connected ... ")
+        print("MQTT not connected ... ")
 
 # Initialize HA MQTT client
 ha_mqtt_client = mqtt.Client()
