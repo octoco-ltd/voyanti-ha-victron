@@ -41,8 +41,8 @@ HA_MQTT_DISCOVERY_TOPIC = 'homeassistant'
 
 CERBO_MQTT_BROKER = config['cerbo_mqtt_host']
 CERBO_MQTT_PORT = config['cerbo_mqtt_port']
-CERBO_MQTT_USER = config['cerbo_mqtt_user']
-CERBO_MQTT_PASSWORD = config['cerbo_mqtt_password']
+# CERBO_MQTT_USER = config['cerbo_mqtt_user']
+# CERBO_MQTT_PASSWORD = config['cerbo_mqtt_password']
 CERBO_SERIAL_NO = config['cerbo_serial_no']
 
 ha_mqtt_connected = False
