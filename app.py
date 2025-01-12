@@ -140,7 +140,7 @@ cerbo_mqtt_client.loop_start()
 # Clean up on exit
 def exit_handler():
     logging.error("Script exiting")
-    ha_mqtt_client.publish(f"{HA_MQTT_BASE_TOPIC}/{CERBO_SERIAL_NO}/availability", "offline")
+    ha_mqtt_client.publish(f"{HA_MQTT_BASE_TOPIC}_{CERBO_SERIAL_NO}/availability", "offline")
     ha_mqtt_client.loop_stop()
 
 atexit.register(exit_handler)
@@ -157,7 +157,7 @@ def ha_discovery():
     }
 
     # Base availability topic
-    availability_topic = f"{HA_MQTT_BASE_TOPIC}/{CERBO_SERIAL_NO}/availability"
+    availability_topic = f"{HA_MQTT_BASE_TOPIC}_{CERBO_SERIAL_NO}/availability"
 
     for param, details in READ_PARAMETER_MAP.items():
         discovery_payload = {
