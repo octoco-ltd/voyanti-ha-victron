@@ -110,11 +110,12 @@ def cerbo_on_message(client, userdata, msg):
                 })
 
                 # Publish to the Home Assistant topic
-                ha_mqtt_client.publish(ha_topic, ha_payload, retain=True)
+                ha_mqtt_client.publish(ha_topic, ha_payload, retain=False)
                 print(f"Published to {ha_topic}: {ha_payload}")
                 break
         else:
-            print(f"Topic {topic_suffix} not found in READ_PARAMETER_MAP")
+            pass
+            # print(f"Topic {topic_suffix} not found in READ_PARAMETER_MAP")
     else:
         print("MQTT not connected ... ")
 
