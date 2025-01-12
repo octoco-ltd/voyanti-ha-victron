@@ -118,7 +118,7 @@ def cerbo_on_message(client, userdata, msg):
                     "name": param,
                     "value": json.loads(payload)  # Assumes payload is JSON, parse and send the value
                 })
-
+                print(f"Publishing to {ha_topic}: {ha_payload}")
                 # Publish to the Home Assistant topic
                 ha_mqtt_client.publish(ha_topic, ha_payload, retain=False)
                 print(f"Published to {ha_topic}: {ha_payload}")
