@@ -119,6 +119,7 @@ def cerbo_on_message(client, userdata, msg):
                 ha_payload = round(payload_json["value"], 2)
                 # Publish to the Home Assistant topic
                 ha_mqtt_client.publish(ha_topic, ha_payload, retain=False)
+                ha_mqtt_client.publish(f"{HA_MQTT_BASE_TOPIC}/{CERBO_SERIAL_NO}/availability", "online")
                 print(f"Published to {ha_topic}: {ha_payload}")
                 break
         else:
@@ -140,7 +141,7 @@ cerbo_mqtt_client.loop_start()
 # Clean up on exit
 def exit_handler():
     logging.error("Script exiting")
-    ha_mqtt_client.publish(f"{HA_MQTT_BASE_TOPIC}_{CERBO_SERIAL_NO}/availability", "offline")
+    ha_mqtt_client.publish(f"{HA_MQTT_BASE_TOPIC}/{CERBO_SERIAL_NO}/availability", "offline")
     ha_mqtt_client.loop_stop()
 
 atexit.register(exit_handler)
@@ -157,7 +158,7 @@ def ha_discovery():
     }
 
     # Base availability topic
-    availability_topic = f"{HA_MQTT_BASE_TOPIC}_{CERBO_SERIAL_NO}/availability"
+    availability_topic = f"{HA_MQTT_BASE_TOPIC}/{CERBO_SERIAL_NO}/availability"
 
     for param, details in READ_PARAMETER_MAP.items():
         discovery_payload = {
