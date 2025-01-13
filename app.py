@@ -170,7 +170,7 @@ def ha_discovery_solarchargers():
 
 
         for param, details in READ_PARAMETER_MAP.items():
-            if details['module_id'] == 'solarcharger':
+            if details['module_type'] == 'solarcharger':
                 discovery_payload = {
                     "name": param,
                     "unique_id": f"victron_{CERBO_SERIAL_NO}_{param.replace(' ', '_').lower()}",
