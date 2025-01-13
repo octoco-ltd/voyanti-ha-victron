@@ -10,12 +10,14 @@ import sys
 import traceback
 from victron_map import READ_PARAMETER_MAP
 
-# Configure logging
-logging.basicConfig(
-    level=logging.INFO,  # Set logging level
-    format="%(asctime)s - %(levelname)s - %(message)s",  # Format with timestamp
-    datefmt="%Y-%m-%d %H:%M:%S"  # Date format
-)
+# Map numbers to logging levels
+LOG_LEVEL_MAP = {
+    0: logging.CRITICAL,
+    1: logging.ERROR,
+    2: logging.WARNING,
+    3: logging.INFO,
+    4: logging.DEBUG
+}
 
 # Load configuration from config.yaml
 if os.path.exists('/data/options.json'):
@@ -29,6 +31,15 @@ elif os.path.exists('victron\\config.yaml'):
         config = yaml.load(file, Loader=yaml.FullLoader)['options']
 else:
     sys.exit("No config file found")
+
+
+log_level = LOG_LEVEL_MAP.get(config.get('debug', 2), logging.INFO)  # Default to INFO if out of range
+# Configure logging
+logging.basicConfig(
+    level=log_level,  # Set logging level
+    format="%(asctime)s - %(levelname)s - %(message)s",  # Format with timestamp
+    datefmt="%Y-%m-%d %H:%M:%S"  # Date format
+)
 
 # Configuration settings
 INVERTER_MODEL = config['inverter_model']
@@ -47,9 +58,6 @@ CERBO_MQTT_PORT = config['cerbo_mqtt_port']
 CERBO_SERIAL_NO = config['cerbo_serial_no']
 SOLARCHARGERS = config['solarchargers']
 GRID_METERS = config['grid_meters']
-
-print(SOLARCHARGERS)
-print(GRID_METERS)
 
 ha_mqtt_connected = False
 
@@ -130,13 +138,13 @@ def cerbo_on_message(client, userdata, msg):
                 # Publish to the Home Assistant topic
                 ha_mqtt_client.publish(ha_topic, ha_payload, retain=False)
                 ha_mqtt_client.publish(f"{HA_MQTT_BASE_TOPIC}/{CERBO_SERIAL_NO}/availability", "online")
-                print(f"Published to {ha_topic}: {ha_payload}")
+                logging.debug(f"Published to {ha_topic}: {ha_payload}")
                 break
         else:
             pass
             # print(f"Topic {topic_suffix} not found in READ_PARAMETER_MAP")
     else:
-        print("MQTT not connected ... ")
+        logging.info("MQTT not connected ... ")
 
 # Initialize HA MQTT client
 cerbo_mqtt_client = mqtt.Client()

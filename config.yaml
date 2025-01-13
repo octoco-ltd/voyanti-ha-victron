@@ -36,6 +36,7 @@ options:
     - id: "30"
       name: "Grid Meter"
       model: "ET340"
+  debug: 2
 schema:
   ha_mqtt_host: str
   ha_mqtt_port: int
@@ -56,4 +57,5 @@ schema:
     - id: str
       name: str
       model: str
+  DEBUG: int(0,5)
       
