@@ -248,7 +248,7 @@ def ha_discovery_inverter():
             discovery_payload = {
                 "name": f"{param}",
                 "unique_id": f"victron_{CERBO_SERIAL_NO}_inverter_{param.replace(' ', '_').lower()}",
-                "state_topic": f"{HA_MQTT_BASE_TOPIC}/{CERBO_SERIAL_NO}/inverter/{param.replace(' ', '_').lower()}",
+                "state_topic": f"{HA_MQTT_BASE_TOPIC}/{CERBO_SERIAL_NO}/{details['module_type']}/0/{param.replace(' ', '_').lower()}",
                 "availability_topic": availability_topic,
                 "device": device,
                 "device_class": details.get("device_class"),
