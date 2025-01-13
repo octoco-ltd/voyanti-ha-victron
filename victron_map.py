@@ -8,8 +8,8 @@ READ_PARAMETER_MAP = {
     "Active SOC Limit": {
         "device_class": "battery",
         "unit": "%",
-        "topic":  "settings/0/Settings/CGwacs/BatteryLife/SocLimit",
-        "module_type": "system"
+        "topic":  "Settings/CGwacs/BatteryLife/SocLimit",
+        "module_type": "settings"
     },
     "BMS Battery Voltage": {
         "device_class": "voltage",

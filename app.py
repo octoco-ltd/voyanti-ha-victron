@@ -45,10 +45,8 @@ CERBO_MQTT_PORT = config['cerbo_mqtt_port']
 # CERBO_MQTT_USER = config['cerbo_mqtt_user']
 # CERBO_MQTT_PASSWORD = config['cerbo_mqtt_password']
 CERBO_SERIAL_NO = config['cerbo_serial_no']
-SOLARCHARGER_IDS = config['solarcharger_ids']
-GRID_IDS = config['grid_ids']
-VEBUS_ID = config['vebus_id']
-BATTERY_ID = config['battery_id']
+SOLARCHARGERS = config['solarchargers']
+GRID_METERS = config['grid_meters']
 
 ha_mqtt_connected = False
 
@@ -112,14 +110,15 @@ def cerbo_on_message(client, userdata, msg):
 
         # Split the topic into parts by '/'
         topic_parts = topic.split("/")
-        type = topic_parts[2]
+        module_type = topic_parts[2]
+        module_id = topic_parts[3]
         topic_suffix = "/".join(topic_parts[4:])  # Get the part after the ID
 
         # Find the matching parameter in READ_PARAMETER_MAP
         for param, details in READ_PARAMETER_MAP.items():
             if details["topic"] == topic_suffix:
                 # Found a match, construct Home Assistant topic and payload
-                ha_topic = f"{HA_MQTT_BASE_TOPIC}/{CERBO_SERIAL_NO}/{param.replace(' ', '_').lower()}"
+                ha_topic = f"{HA_MQTT_BASE_TOPIC}/{CERBO_SERIAL_NO}/{module_type}/{module_id}/{param.replace(' ', '_').lower()}"
                 payload_json = json.loads(payload)
                 ha_payload = round(payload_json["value"], 2)
                 # Publish to the Home Assistant topic
@@ -152,56 +151,37 @@ def exit_handler():
 atexit.register(exit_handler)
 
 # HA Discovery Function
-def ha_discovery():
-    logging.info("Publishing HA Discovery topics...")
-    # Define device information
-    device = {
-        "manufacturer": "Victron",
-        "model": INVERTER_MODEL,
-        "identifiers": [f"victron_{CERBO_SERIAL_NO}"],
-        "name": f"Victron {CERBO_SERIAL_NO}"
-    }
-
+def ha_discovery_solarchargers():
     # Base availability topic
     availability_topic = f"{HA_MQTT_BASE_TOPIC}/{CERBO_SERIAL_NO}/availability"
-
-    for param, details in READ_PARAMETER_MAP.items():
-        discovery_payload = {
-            "name": param,
-            "unique_id": f"victron_{CERBO_SERIAL_NO}_{param.replace(' ', '_').lower()}",
-            "state_topic": f"{HA_MQTT_BASE_TOPIC}/{CERBO_SERIAL_NO}/{param.replace(' ', '_').lower()}",
-            "availability_topic": availability_topic,
-            "device": device,
-            "device_class": details.get("device_class"),
-            "unit_of_measurement": details.get("unit"),
+    logging.info("Publishing HA Solarcharger Discovery topics...")
+    
+    for solarcharger in SOLARCHARGERS:
+    
+        # Define device information
+        device = {
+            "manufacturer": "Victron",
+            "model": solarcharger['model'],
+            "identifiers": [f"victron_{CERBO_SERIAL_NO}_solarcharger_{solarcharger['id']}"],
+            "name": f"Victron {solarcharger['name']}"
         }
-        discovery_topic = f"{HA_MQTT_DISCOVERY_TOPIC}/sensor/victron_{CERBO_SERIAL_NO}/{param.replace(' ', '_').lower()}/config"
-        ha_mqtt_client.publish(discovery_topic, json.dumps(discovery_payload), retain=True)
+    
+    # Filter items with the specified module type
 
-    # Define settable parameters as MQTT number entities
-    # settable_parameters = {
-    #     "Current Limit": {"min": 0, "max": 1, "step": 0.1, "unit": "A", "command_topic": f"{HA_MQTT_BASE_TOPIC}/{CERBO_SERIAL_NO}/set/current_limit"},
-    #     "Output Voltage": {"min": 735, "max": 810, "step": 0.1, "unit": "V", "command_topic": f"{HA_MQTT_BASE_TOPIC}/{CERBO_SERIAL_NO}/set/output_voltage"},
-    #     "Output Current": {"min": 0, "max": 1, "step": 0.1, "unit": "A", "command_topic": f"{HA_MQTT_BASE_TOPIC}/{CERBO_SERIAL_NO}/set/current"},
-    #     "Altitude": {"min": 0, "max": 5000, "step": 100, "unit": "m", "command_topic": f"{HA_MQTT_BASE_TOPIC}/{CERBO_SERIAL_NO}/set/altitude"},
-    # }
 
-    # # Publish discovery messages for settable parameters
-    # for param, details in settable_parameters.items():
-    #     discovery_payload = {
-    #         "name": param,
-    #         "unique_id": f"victron_{CERBO_SERIAL_NO}_{param.replace(' ', '_').lower()}",
-    #         "command_topic": details["command_topic"],
-    #         "min": details["min"],
-    #         "max": details["max"],
-    #         "step": details["step"],
-    #         "unit_of_measurement": details["unit"],
-    #         "availability_topic": availability_topic,
-    #         "device": device
-    #     }
-    #     discovery_topic = f"{HA_MQTT_DISCOVERY_TOPIC}/number/victron_{CERBO_SERIAL_NO}/{param.replace(' ', '_').lower()}/config"
-    #     ha_mqtt_client.publish(discovery_topic, json.dumps(discovery_payload), retain=True)
-
+        for param, details in READ_PARAMETER_MAP.items():
+            if details['module_id'] == 'solarcharger':
+                discovery_payload = {
+                    "name": param,
+                    "unique_id": f"victron_{CERBO_SERIAL_NO}_{param.replace(' ', '_').lower()}",
+                    "state_topic": f"{HA_MQTT_BASE_TOPIC}/{CERBO_SERIAL_NO}/solarcharger/{solarcharger['id']}/{param.replace(' ', '_').lower()}",
+                    "availability_topic": availability_topic,
+                    "device": device,
+                    "device_class": details.get("device_class"),
+                    "unit_of_measurement": details.get("unit"),
+                }
+                discovery_topic = f"{HA_MQTT_DISCOVERY_TOPIC}/sensor/victron_{CERBO_SERIAL_NO}/solarcharger/{solarcharger['id']}/{param.replace(' ', '_').lower()}/config"
+                ha_mqtt_client.publish(discovery_topic, json.dumps(discovery_payload), retain=True)
 
     ha_mqtt_client.publish(availability_topic, "online")
 
@@ -209,7 +189,8 @@ def ha_discovery():
 
 # Main loop to continuously read parameters
 try:
-    ha_discovery()
+    if len(SOLARCHARGERS) > 0:
+        ha_discovery_solarchargers()
     while True:
         time.sleep(5)
         if cerbo_mqtt_client.is_connected():

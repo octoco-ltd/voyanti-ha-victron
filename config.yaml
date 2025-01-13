@@ -1,6 +1,6 @@
 name: "Voyanti Victron Addon"
 description: "Voyanti Victron Addon"
-version: "0.1.15"
+version: "0.1.16"
 slug: "victron"
 url: "https://github.com/octoco-ltd/voyanti-ha-victron"
 init: false
@@ -18,32 +18,42 @@ boot: auto
 
 options:
   inverter_model: "Quattro 48/10000"
+  cerbo_model: "Cerbo GX"
   ha_mqtt_host: "localhost"
   ha_mqtt_port: 1883
   ha_mqtt_user: "mqtt"
   ha_mqtt_password: "yourmqttpassword"
   cerbo_mqtt_host: "victron.local"
   cerbo_mqtt_port: 1883
+  cerbo_mqtt_user: ""
+  cerbo_mqtt_password: ""
   cerbo_serial_no: "1234567890"
-  solarcharger_ids:
-    - "0"
-  grid_ids:
-    - ""
-  vebus_id: "276"
-  battery_id: "512"
+  solarchargers:
+    - id: "0"
+      name: "MPPT 1"
+      model: "MPPT 250-100"
+  grid_meters:
+    - id: "30"
+      name: "Grid Meter"
+      model: "ET340"
 schema:
-  inverter_model: str
   ha_mqtt_host: str
   ha_mqtt_port: int
   ha_mqtt_user: str
-  ha_mqtt_password: str
+  ha_mqtt_password: password
   cerbo_mqtt_host: str
   cerbo_mqtt_port: int
+  cerbo_mqtt_user: str?
+  cerbo_mqtt_password: password?
   cerbo_serial_no: str
-  solarcharger_ids:
-    - str
-  grid_ids:
-    - str
-  vebus_id: str
-  battery_id: str
+  inverter_model: str
+  cerbo_model: str
+  solarchargers:
+    - id: str
+      name: str
+      model: str
+  grid_meters:
+    - id: str
+      name: str
+      model: str
       
