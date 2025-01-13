@@ -197,7 +197,7 @@ READ_PARAMETER_MAP = {
         "topic":  "Dc/0/Voltage",
         "module_type": "solarcharger"
     },
-    "MPPT urrent": {
+    "MPPT Current": {
         "device_class": "current",
         "unit": "A",
         "topic":  "Dc/0/Current",
