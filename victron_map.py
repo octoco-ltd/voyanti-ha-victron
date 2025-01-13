@@ -79,6 +79,11 @@ READ_PARAMETER_MAP = {
         "unit": "A",
         "topic":  "vebus/276/Ac/Out/L3/I",
     },
+    "Total Load Power": {
+        "device_class": "power",
+        "unit": "W",
+        "topic":  "vebus/276/Ac/Out/P",
+    },
     "Active Input L1 Power": {
         "device_class": "power",
         "unit": "W",
