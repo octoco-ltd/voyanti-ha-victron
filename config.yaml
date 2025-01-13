@@ -1,6 +1,6 @@
 name: "Voyanti Victron Addon"
 description: "Voyanti Victron Addon"
-version: "0.1.25"
+version: "0.1.26"
 slug: "victron"
 url: "https://github.com/octoco-ltd/voyanti-ha-victron"
 init: false
