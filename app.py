@@ -186,7 +186,7 @@ def ha_discovery_solarchargers():
                     "device_class": details.get("device_class"),
                     "unit_of_measurement": details.get("unit"),
                 }
-                discovery_topic = f"{HA_MQTT_DISCOVERY_TOPIC}/sensor/victron_{CERBO_SERIAL_NO}/solarcharger_{solarcharger['id']}/{param.replace(' ', '_').lower()}/config"
+                discovery_topic = f"{HA_MQTT_DISCOVERY_TOPIC}/sensor/victron_{CERBO_SERIAL_NO}/solarcharger_{solarcharger['id']}_{param.replace(' ', '_').lower()}/config"
                 ha_mqtt_client.publish(discovery_topic, json.dumps(discovery_payload), retain=True)
 
     ha_mqtt_client.publish(availability_topic, "online")
