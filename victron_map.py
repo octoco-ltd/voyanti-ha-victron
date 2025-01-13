@@ -2,241 +2,206 @@ READ_PARAMETER_MAP = {
     "Battery SoC": {
         "device_class": "battery",
         "unit": "%",
-        "topic":  "system/0/Dc/Battery/Soc",
+        "topic":  "Dc/Battery/Soc",
+        "module_type": "system"
     },
     "Active SOC Limit": {
         "device_class": "battery",
         "unit": "%",
         "topic":  "settings/0/Settings/CGwacs/BatteryLife/SocLimit",
+        "module_type": "system"
     },
     "BMS Battery Voltage": {
         "device_class": "voltage",
         "unit": "V",
-        "topic":  "system/0/Dc/Battery/Voltage",
+        "topic":  "Dc/Battery/Voltage",
+        "module_type": "system"
     },
     "BMS Battery Load": {
         "device_class": "power",
         "unit": "W",
-        "topic":  "system/0/Dc/Battery/Power",
+        "topic":  "Dc/Battery/Power",
+        "module_type": "system"
     },
     "Total PV Power": {
         "device_class": "power",
         "unit": "W",
-        "topic":  "system/0/Dc/Pv/Power",
+        "topic":  "Dc/Pv/Power",
     },
     "Active Input Source": {
         "device_class": "none",
         "unit": None,
-        "topic":  "system/0/Ac/ActiveIn/Source",
+        "topic":  "Ac/ActiveIn/Source",
+        "module_type": "system"
     },
     "Inverter State": {
         "device_class": "none",
         "unit": None,
-        "topic":  "system/0/SystemState/State",
+        "topic":  "SystemState/State",
+        "module_type": "system"
     },
     "Load L1 Power": {
         "device_class": "power",
         "unit": "W",
-        "topic":  "vebus/276/Ac/Out/L1/P",
+        "topic":  "Ac/Out/L1/P",
+        "module_type": "vebus"
     },
     "Load L1 Voltage": {
         "device_class": "voltage",
         "unit": "V",
-        "topic":  "vebus/276/Ac/Out/L1/V",
+        "topic":  "Ac/Out/L1/V",
     },
     "Load L1 Current": {
         "device_class": "current",
         "unit": "A",
-        "topic":  "vebus/276/Ac/Out/L1/I",
+        "topic":  "Ac/Out/L1/I",
+        "module_type": "vebus"
     },
     "Load L2 Power": {
         "device_class": "power",
         "unit": "W",
-        "topic":  "vebus/276/Ac/Out/L2/P",
+        "topic":  "Ac/Out/L2/P",
+        "module_type": "vebus"
     },
     "Load L2 Voltage": {
         "device_class": "voltage",
         "unit": "V",
-        "topic":  "vebus/276/Ac/Out/L2/V",
+        "topic":  "Ac/Out/L2/V",
     },
     "Load L2 Current": {
         "device_class": "current",
         "unit": "A",
-        "topic":  "vebus/276/Ac/Out/L2/I",
+        "topic":  "Ac/Out/L2/I",
     },
     "Load L3 Power": {
         "device_class": "power",
         "unit": "W",
-        "topic":  "vebus/276/Ac/Out/L3/P",
+        "topic":  "Ac/Out/L3/P",
+        "module_type": "vebus"
     },
     "Load L3 Voltage": {
         "device_class": "voltage",
         "unit": "V",
-        "topic":  "vebus/276/Ac/Out/L3/V",
+        "topic":  "Ac/Out/L3/V",
+        "module_type": "vebus"
     },
     "Load L3 Current": {
         "device_class": "current",
         "unit": "A",
-        "topic":  "vebus/276/Ac/Out/L3/I",
+        "topic":  "Ac/Out/L3/I",
+        "module_type": "vebus"
     },
     "Total Load Power": {
         "device_class": "power",
         "unit": "W",
-        "topic":  "vebus/276/Ac/Out/P",
+        "topic":  "Ac/Out/P",
+        "module_type": "vebus"
     },
     "Active Input L1 Power": {
         "device_class": "power",
         "unit": "W",
-        "topic":  "vebus/276/Ac/ActiveIn/L1/P",
+        "topic":  "Ac/ActiveIn/L1/P",
+        "module_type": "vebus"
     },
     "Active Input L2 Power": {
         "device_class": "power",
         "unit": "W",
-        "topic":  "vebus/276/Ac/ActiveIn/L2/P",
+        "topic":  "Ac/ActiveIn/L2/P",
+        "module_type": "vebus"
     },
     "Active Input L3 Power": {
         "device_class": "power",
         "unit": "W",
-        "topic":  "vebus/276/Ac/ActiveIn/L3/P",
+        "topic":  "Ac/ActiveIn/L3/P",
+        "module_type": "vebus"
     },
     "Grid meter energy import": {
         "device_class": "energy",
         "unit": "kWh",
-        "topic":  "grid/30/Ac/Energy/Forward",
+        "topic":  "Ac/Energy/Forward",
+        "module_type": "grid"
     },
     "Grid meter energy export": {
         "device_class": "energy",
         "unit": "kWh",
-        "topic":  "grid/30/Ac/Energy/Reverse",
+        "topic":  "Ac/Energy/Reverse",
+        "module_type": "grid"
     },
     "Grid L1 Power": {
         "device_class": "power",
         "unit": "W",
-        "topic":  "grid/30/Ac/L1/Power",
+        "topic":  "Ac/L1/Power",
+        "module_type": "grid"
     },
     "Grid L2 Power": {
         "device_class": "power",
         "unit": "W",
-        "topic":  "grid/30/Ac/L2/Power",
+        "topic":  "Ac/L2/Power",
+        "module_type": "grid"
     },
     "Grid L3 Power": {
         "device_class": "power",
         "unit": "W",
-        "topic":  "grid/30/Ac/L3/Power",
+        "topic":  "Ac/L3/Power",
+        "module_type": "grid"
     },
     "Total Grid Power": {
         "device_class": "power",
         "unit": "W",
-        "topic":  "grid/30/Ac/Power",
+        "topic":  "Ac/Power",
     },
     "Grid L1 Voltage": {
         "device_class": "voltage",
         "unit": "V",
-        "topic":  "grid/30/Ac/L1/Voltage",
+        "topic":  "Ac/L1/Voltage",
+        "module_type": "grid"
     },
     "Grid L2 Voltage": {
         "device_class": "voltage",
         "unit": "V",
-        "topic":  "grid/30/Ac/L2/Voltage",
+        "topic":  "Ac/L2/Voltage",
+        "module_type": "grid"
     },
     "Grid L3 Voltage": {
         "device_class": "voltage",
         "unit": "V",
-        "topic":  "grid/30/Ac/L3/Voltage",
+        "topic":  "Ac/L3/Voltage",
+        "module_type": "grid"
     },
     "Grid L1 Current": {
         "device_class": "current",
         "unit": "A",
-        "topic":  "grid/30/Ac/L1/Current",
+        "topic":  "Ac/L1/Current",
+        "module_type": "grid"
     },
     "Grid L2 Current": {
         "device_class": "current",
         "unit": "A",
-        "topic":  "grid/30/Ac/L2/Current",
+        "topic":  "Ac/L2/Current",
+        "module_type": "grid"
     },
     "Grid L3 Current": {
         "device_class": "current",
         "unit": "A",
-        "topic":  "grid/30/Ac/L3/Current",
+        "topic":  "Ac/L3/Current",
+        "module_type": "grid"
     },
-    "MPPT 1 Power": {
-        "device_class": "power",
-        "unit": "W",
-        "topic":  "solarcharger/0/Yield/Power",
-    },
-    "MPPT 1 Voltage": {
+    "MPPT Voltage": {
         "device_class": "voltage",
         "unit": "V",
-        "topic":  "solarcharger/0/Dc/0/Voltage",
+        "topic":  "Dc/0/Voltage",
+        "module_type": "solarcharger"
     },
-    "MPPT 1 Current": {
+    "MPPT urrent": {
         "device_class": "current",
         "unit": "A",
-        "topic":  "solarcharger/0/Dc/0/Current",
+        "topic":  "Dc/0/Current",
+        "module_type": "solarcharger"
     },
-    "MPPT 1 State": {
+    "MPPT State": {
         "device_class": "none",
         "unit": None,
-        "topic":  "solarcharger/0/State",
-    },
-    "MPPT 2 Power": {
-        "device_class": "power",
-        "unit": "W",
-        "topic":  "solarcharger/277/Yield/Power",
-    },
-    "MPPT 2 Voltage": {
-        "device_class": "voltage",
-        "unit": "V",
-        "topic":  "solarcharger/277/Dc/0/Voltage",
-    },
-    "MPPT 2 Current": {
-        "device_class": "current",
-        "unit": "A",
-        "topic":  "solarcharger/277/Dc/0/Current",
-    },
-    "MPPT 2 State": {
-        "device_class": "none",
-        "unit": None,
-        "topic":  "solarcharger/277/State",
-    },
-    "MPPT 3 Power": {
-        "device_class": "power",
-        "unit": "W",
-        "topic":  "solarcharger/280/Yield/Power",
-    },
-    "MPPT 3 Voltage": {
-        "device_class": "voltage",
-        "unit": "V",
-        "topic":  "solarcharger/280/Dc/0/Voltage",
-    },
-    "MPPT 3 Current": {
-        "device_class": "current",
-        "unit": "A",
-        "topic":  "solarcharger/280/Dc/0/Current",
-    },
-    "MPPT 3 State": {
-        "device_class": "none",
-        "unit": None,
-        "topic":  "solarcharger/280/State",
-    },
-    "MPPT 4 Power": {
-        "device_class": "power",
-        "unit": "W",
-        "topic":  "solarcharger/281/Yield/Power",
-    },
-    "MPPT 4 Voltage": {
-        "device_class": "voltage",
-        "unit": "V",
-        "topic":  "solarcharger/281/Dc/0/Voltage",
-    },
-    "MPPT 4 Current": {
-        "device_class": "current",
-        "unit": "A",
-        "topic":  "solarcharger/281/Dc/0/Current",
-    },
-    "MPPT 4 State": {
-        "device_class": "none",
-        "unit": None,
-        "topic":  "solarcharger/281/State",
+        "topic":  "State",
+        "module_type": "solarcharger"
     },
 }

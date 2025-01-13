@@ -45,6 +45,10 @@ CERBO_MQTT_PORT = config['cerbo_mqtt_port']
 # CERBO_MQTT_USER = config['cerbo_mqtt_user']
 # CERBO_MQTT_PASSWORD = config['cerbo_mqtt_password']
 CERBO_SERIAL_NO = config['cerbo_serial_no']
+SOLARCHARGER_IDS = config['solarcharger_ids']
+GRID_IDS = config['grid_ids']
+VEBUS_ID = config['vebus_id']
+BATTERY_ID = config['battery_id']
 
 ha_mqtt_connected = False
 
@@ -108,7 +112,8 @@ def cerbo_on_message(client, userdata, msg):
 
         # Split the topic into parts by '/'
         topic_parts = topic.split("/")
-        topic_suffix = "/".join(topic_parts[2:])  # Get the part after the ID
+        type = topic_parts[2]
+        topic_suffix = "/".join(topic_parts[4:])  # Get the part after the ID
 
         # Find the matching parameter in READ_PARAMETER_MAP
         for param, details in READ_PARAMETER_MAP.items():

@@ -25,6 +25,12 @@ options:
   cerbo_mqtt_host: "victron.local"
   cerbo_mqtt_port: 1883
   cerbo_serial_no: "1234567890"
+  solarcharger_ids:
+    - "0"
+  grid_ids:
+    - ""
+  vebus_id: "276"
+  battery_id: "512"
 schema:
   inverter_model: str
   ha_mqtt_host: str
@@ -34,4 +40,10 @@ schema:
   cerbo_mqtt_host: str
   cerbo_mqtt_port: int
   cerbo_serial_no: str
+  solarcharger_ids:
+    - str
+  grid_ids:
+    - str
+  vebus_id: str
+  battery_id: str
       
