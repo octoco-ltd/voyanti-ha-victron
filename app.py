@@ -107,11 +107,12 @@ def cerbo_on_message(client, userdata, msg):
         # Get the topic and payload
         topic = msg.topic
         payload = msg.payload.decode("utf-8")
-        
-        print(topic)
 
         # Split the topic into parts by '/'
         topic_parts = topic.split("/")
+        if len(topic_parts) < 4:
+            return
+        
         module_type = topic_parts[2]
         module_id = topic_parts[3]
         topic_suffix = "/".join(topic_parts[4:])  # Get the part after the ID
