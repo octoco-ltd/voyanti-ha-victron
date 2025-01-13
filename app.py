@@ -56,6 +56,7 @@ CERBO_MQTT_PORT = config['cerbo_mqtt_port']
 # CERBO_MQTT_USER = config['cerbo_mqtt_user']
 # CERBO_MQTT_PASSWORD = config['cerbo_mqtt_password']
 CERBO_SERIAL_NO = config['cerbo_serial_no']
+CERBO_MODEL = config['cerbo_model']
 SOLARCHARGERS = config['solarchargers']
 GRID_METERS = config['grid_meters']
 
@@ -229,6 +230,36 @@ def ha_discovery_grid():
     ha_mqtt_client.publish(availability_topic, "online")
     
     
+def ha_discovery_cerbo():
+    # Base availability topic
+    availability_topic = f"{HA_MQTT_BASE_TOPIC}/{CERBO_SERIAL_NO}/availability"
+    logging.info("Publishing HA Solarcharger Discovery topics...")
+    
+    # Define device information
+    device = {
+        "manufacturer": "Victron",
+        "model": CERBO_MODEL,
+        "identifiers": [f"victron_{CERBO_SERIAL_NO}_cerbo"],
+        "name": f"Victron {CERBO_MODEL}"
+    }
+
+
+    for param, details in READ_PARAMETER_MAP.items():
+        if details['module_type'] == 'system' or details['module_type'] == 'settings':
+            discovery_payload = {
+                "name": f"{param}",
+                "unique_id": f"victron_{CERBO_SERIAL_NO}_cerbo_{param.replace(' ', '_').lower()}",
+                "state_topic": f"{HA_MQTT_BASE_TOPIC}/{CERBO_SERIAL_NO}/{details['module_type']}/0/{param.replace(' ', '_').lower()}",
+                "availability_topic": availability_topic,
+                "device": device,
+                "device_class": details.get("device_class"),
+                "unit_of_measurement": details.get("unit"),
+            }
+            discovery_topic = f"{HA_MQTT_DISCOVERY_TOPIC}/sensor/victron_{CERBO_SERIAL_NO}/cerbo_{param.replace(' ', '_').lower()}/config"
+            ha_mqtt_client.publish(discovery_topic, json.dumps(discovery_payload), retain=True)
+
+    ha_mqtt_client.publish(availability_topic, "online")
+    
 def ha_discovery_inverter():
     # Base availability topic
     availability_topic = f"{HA_MQTT_BASE_TOPIC}/{CERBO_SERIAL_NO}/availability"
@@ -244,7 +275,7 @@ def ha_discovery_inverter():
 
 
     for param, details in READ_PARAMETER_MAP.items():
-        if details['module_type'] == 'system' or details['module_type'] == 'settings':
+        if details['module_type'] == 'vebus':
             discovery_payload = {
                 "name": f"{param}",
                 "unique_id": f"victron_{CERBO_SERIAL_NO}_inverter_{param.replace(' ', '_').lower()}",
@@ -266,6 +297,7 @@ try:
     if len(GRID_METERS) > 0:
         ha_discovery_grid()
     ha_discovery_inverter()
+    ha_discovery_cerbo()
     while True:
         time.sleep(5)
         if cerbo_mqtt_client.is_connected():
