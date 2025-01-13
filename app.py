@@ -48,6 +48,9 @@ CERBO_SERIAL_NO = config['cerbo_serial_no']
 SOLARCHARGERS = config['solarchargers']
 GRID_METERS = config['grid_meters']
 
+print(SOLARCHARGERS)
+print(GRID_METERS)
+
 ha_mqtt_connected = False
 
 
