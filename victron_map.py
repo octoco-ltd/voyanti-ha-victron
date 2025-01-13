@@ -27,6 +27,7 @@ READ_PARAMETER_MAP = {
         "device_class": "power",
         "unit": "W",
         "topic":  "Dc/Pv/Power",
+        "module_type": "system"
     },
     "Active Input Source": {
         "device_class": "none",
@@ -50,6 +51,7 @@ READ_PARAMETER_MAP = {
         "device_class": "voltage",
         "unit": "V",
         "topic":  "Ac/Out/L1/V",
+        "module_type": "vebus"
     },
     "Load L1 Current": {
         "device_class": "current",
@@ -67,11 +69,13 @@ READ_PARAMETER_MAP = {
         "device_class": "voltage",
         "unit": "V",
         "topic":  "Ac/Out/L2/V",
+        "module_type": "vebus"
     },
     "Load L2 Current": {
         "device_class": "current",
         "unit": "A",
         "topic":  "Ac/Out/L2/I",
+        "module_type": "vebus"
     },
     "Load L3 Power": {
         "device_class": "power",
@@ -149,6 +153,7 @@ READ_PARAMETER_MAP = {
         "device_class": "power",
         "unit": "W",
         "topic":  "Ac/Power",
+        "module_type": "grid"
     },
     "Grid L1 Voltage": {
         "device_class": "voltage",
