@@ -206,7 +206,7 @@ READ_PARAMETER_MAP = {
     "MPPT Power": {
         "device_class": "power",
         "unit": "W",
-        "topic":  "Dc/0/Yield/Power",
+        "topic":  "Yield/Power",
         "module_type": "solarcharger"
     },
     "MPPT State": {
