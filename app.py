@@ -202,39 +202,39 @@ def ha_discovery_solarchargers():
 
 # HA Discovery Function for Grid Meters
 def ha_discovery_grid():
-    # Include CERBO_SERIAL_NO in availability topic
     availability_topic = f"{HA_MQTT_BASE_TOPIC}/{CERBO_SERIAL_NO}/availability"
     logging.info("Publishing HA Grid Meter Discovery topics...")
     
     for grid in GRID_METERS:
-        # Define device information
         device = {
             "manufacturer": "Victron",
             "model": grid['model'],
             "identifiers": [f"victron_{CERBO_SERIAL_NO}_grid_{grid['id']}"],
-            "name": f"Victron {grid['name']}"
+            "name": f"{grid['name']}"  # Keep "Grid Meter" as defined in GUI config
         }
 
         for param, details in READ_PARAMETER_MAP.items():
             if details['module_type'] == 'grid':
+                # Remove duplication of "Grid" in the name
+                if "Grid" in param and "Grid" in grid['name']:
+                    display_name = f"{grid['name']} {param.replace('Grid', '').strip()}"
+                else:
+                    display_name = f"{grid['name']} {param}"
+
                 discovery_payload = {
-                    "name": f"{param}",
+                    "name": display_name,
                     "unique_id": f"grid_{grid['id']}_{param.replace(' ', '_').lower()}",
-                    # Include CERBO_SERIAL_NO in state_topic
                     "state_topic": f"{HA_MQTT_BASE_TOPIC}/{CERBO_SERIAL_NO}/grid/{grid['id']}/{param.replace(' ', '_').lower()}",
                     "availability_topic": availability_topic,
                     "device": device,
                     "device_class": details.get("device_class"),
                     "unit_of_measurement": details.get("unit"),
                 }
-                # Keep CERBO_SERIAL_NO out of discovery topic
                 discovery_topic = f"{HA_MQTT_DISCOVERY_TOPIC}/sensor/grid_{grid['id']}_{param.replace(' ', '_').lower()}/config"
                 ha_mqtt_client.publish(discovery_topic, json.dumps(discovery_payload), retain=True)
 
-    # Publish availability for Grid Meters
     ha_mqtt_client.publish(availability_topic, "online")
-    
-    
+        
 def ha_discovery_cerbo():
     # Base availability topic
     availability_topic = f"{HA_MQTT_BASE_TOPIC}/{CERBO_SERIAL_NO}/availability"
