@@ -180,9 +180,14 @@ def ha_discovery_solarchargers():
 
         for param, details in READ_PARAMETER_MAP.items():
             if details['module_type'] == 'solarcharger':
-                # Use solarcharger['name'] directly
+                # Remove duplication of "MPPT" in the name
+                if "MPPT" in param and "MPPT" in solarcharger['name']:
+                    display_name = f"{solarcharger['name']} {param.replace('MPPT', '').strip()}"
+                else:
+                    display_name = f"{solarcharger['name']} {param}"
+
                 discovery_payload = {
-                    "name": f"{solarcharger['name']}",
+                    "name": display_name,
                     "unique_id": f"solarcharger_{solarcharger['id']}_{param.replace(' ', '_').lower()}",
                     "state_topic": f"{HA_MQTT_BASE_TOPIC}/{CERBO_SERIAL_NO}/solarcharger/{solarcharger['id']}/{param.replace(' ', '_').lower()}",
                     "availability_topic": availability_topic,
