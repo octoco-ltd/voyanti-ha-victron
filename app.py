@@ -240,8 +240,8 @@ def ha_discovery_grid():
 def ha_discovery_cerbo():
     # Base availability topic
     availability_topic = f"{HA_MQTT_BASE_TOPIC}/{CERBO_SERIAL_NO}/availability"
-    logging.info("Publishing HA Solarcharger Discovery topics...")
-    
+    logging.info("Publishing HA Cerbo Discovery topics...")
+
     # Define device information
     device = {
         "manufacturer": "Victron",
@@ -250,7 +250,7 @@ def ha_discovery_cerbo():
         "name": f"{CERBO_MODEL}"
     }
 
-
+    # Publish discovery messages for existing parameters
     for param, details in READ_PARAMETER_MAP.items():
         if details['module_type'] == 'system' or details['module_type'] == 'settings':
             discovery_payload = {
@@ -265,8 +265,29 @@ def ha_discovery_cerbo():
             discovery_topic = f"{HA_MQTT_DISCOVERY_TOPIC}/sensor/victron_{CERBO_SERIAL_NO}/cerbo_{param.replace(' ', '_').lower()}/config"
             ha_mqtt_client.publish(discovery_topic, json.dumps(discovery_payload), retain=True)
 
-    ha_mqtt_client.publish(availability_topic, "online")
+    # Add `min_soc_limit` as a number entity
+    min_soc_limit_payload = {
+        "name": "Minimum SOC Limit",
+        "unique_id": f"min_soc_limit_{CERBO_SERIAL_NO}",
+        "command_topic": f"{HA_MQTT_BASE_TOPIC}/W/{CERBO_SERIAL_NO}/settings/0/Settings/CGwacs/BatteryLife/MinimumSocLimit",
+        "command_template": '{"value": {{ value }} }',
+        "state_topic": f"{HA_MQTT_BASE_TOPIC}/N/{CERBO_SERIAL_NO}/settings/0/Settings/CGwacs/BatteryLife/MinimumSocLimit",
+        "value_template": "{{ value_json.value | round(0) }}",
+        "min": 20,
+        "max": 100,
+        "step": 5,
+        "mode": "slider",
+        "device_class": "battery",
+        "icon": "mdi:battery-heart-outline",
+        "unit_of_measurement": "%",
+        "device": device
+    }
+    min_soc_limit_discovery_topic = f"{HA_MQTT_DISCOVERY_TOPIC}/number/{CERBO_SERIAL_NO}_min_soc_limit/config"
+    ha_mqtt_client.publish(min_soc_limit_discovery_topic, json.dumps(min_soc_limit_payload), retain=True)
 
+    # Publish online availability
+    ha_mqtt_client.publish(availability_topic, "online")
+    
 # HA Discovery Function for inverters    
 def ha_discovery_inverter():
     # Base availability topic with CERBO_SERIAL_NO included
