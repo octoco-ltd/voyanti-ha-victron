@@ -216,14 +216,14 @@ def ha_discovery_grid():
 
         for param, details in READ_PARAMETER_MAP.items():
             if details['module_type'] == 'grid':
-                # Remove duplication of "Grid" in the name
-                if "Grid" in param and "Grid" in grid['name']:
-                    display_name = f"{grid['name']} {param.replace('Grid', '').strip()}"
-                else:
-                    display_name = f"{grid['name']} {param}"
+                # Remove "Grid" from the parameter name
+                display_name = param.replace('Grid', '').strip()  # e.g., "L3 Current"
+
+                # Log the generated name for debugging
+                logging.debug(f"Generated display_name: {display_name}")
 
                 discovery_payload = {
-                    "name": display_name,
+                    "name": display_name,  # Use concise entity name
                     "unique_id": f"grid_{grid['id']}_{param.replace(' ', '_').lower()}",
                     "state_topic": f"{HA_MQTT_BASE_TOPIC}/{CERBO_SERIAL_NO}/grid/{grid['id']}/{param.replace(' ', '_').lower()}",
                     "availability_topic": availability_topic,
@@ -231,6 +231,7 @@ def ha_discovery_grid():
                     "device_class": details.get("device_class"),
                     "unit_of_measurement": details.get("unit"),
                 }
+
                 discovery_topic = f"{HA_MQTT_DISCOVERY_TOPIC}/sensor/grid_{grid['id']}_{param.replace(' ', '_').lower()}/config"
                 ha_mqtt_client.publish(discovery_topic, json.dumps(discovery_payload), retain=True)
 

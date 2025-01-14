@@ -119,13 +119,13 @@ READ_PARAMETER_MAP = {
         "topic":  "Ac/ActiveIn/L3/P",
         "module_type": "vebus"
     },
-    "Grid  energy import": {
+    "Grid energy import": {
         "device_class": "energy",
         "unit": "kWh",
         "topic":  "Ac/Energy/Forward",
         "module_type": "grid"
     },
-    "Grid  energy export": {
+    "Grid energy export": {
         "device_class": "energy",
         "unit": "kWh",
         "topic":  "Ac/Energy/Reverse",
