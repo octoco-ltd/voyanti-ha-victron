@@ -175,7 +175,7 @@ def ha_discovery_solarchargers():
             "manufacturer": "Victron",
             "model": solarcharger['model'],
             "identifiers": [f"victron_{CERBO_SERIAL_NO}_solarcharger_{solarcharger['id']}"],
-            "name": f"Victron {solarcharger['name']}"  # Device name remains descriptive
+            "name": f"{solarcharger['name']}"
         }
 
         for param, details in READ_PARAMETER_MAP.items():
@@ -247,7 +247,7 @@ def ha_discovery_cerbo():
         "manufacturer": "Victron",
         "model": CERBO_MODEL,
         "identifiers": [f"victron_{CERBO_SERIAL_NO}_cerbo"],
-        "name": f"Victron {CERBO_MODEL}"
+        "name": f"{CERBO_MODEL}"
     }
 
 
@@ -278,7 +278,7 @@ def ha_discovery_inverter():
         "manufacturer": "Victron",
         "model": INVERTER_MODEL,
         "identifiers": [f"victron_{CERBO_SERIAL_NO}_inverter"],  # Included CERBO_SERIAL_NO
-        "name": f"Victron {INVERTER_MODEL}"
+        "name": f"{INVERTER_MODEL}"
     }
 
     for param, details in READ_PARAMETER_MAP.items():
