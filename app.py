@@ -165,66 +165,65 @@ def exit_handler():
 
 atexit.register(exit_handler)
 
-# HA Discovery Function
+# HA Discovery Function for Solarchargers
 def ha_discovery_solarchargers():
     # Base availability topic
-    availability_topic = f"{HA_MQTT_BASE_TOPIC}/{CERBO_SERIAL_NO}/availability"
+    availability_topic = f"{HA_MQTT_BASE_TOPIC}/availability"
     logging.info("Publishing HA Solarcharger Discovery topics...")
     
     for solarcharger in SOLARCHARGERS:
-    
         # Define device information
         device = {
             "manufacturer": "Victron",
             "model": solarcharger['model'],
-            "identifiers": [f"victron_{CERBO_SERIAL_NO}_solarcharger_{solarcharger['id']}"],
+            "identifiers": [f"victron_solarcharger_{solarcharger['id']}"],  # Removed CERBO_SERIAL_NO
             "name": f"Victron {solarcharger['name']}"
         }
-
 
         for param, details in READ_PARAMETER_MAP.items():
             if details['module_type'] == 'solarcharger':
                 discovery_payload = {
-                    "name": f"{param}",
-                    "unique_id": f"victron_{CERBO_SERIAL_NO}_solarcharger_{solarcharger['id']}_{param.replace(' ', '_').lower()}",
-                    "state_topic": f"{HA_MQTT_BASE_TOPIC}/{CERBO_SERIAL_NO}/solarcharger/{solarcharger['id']}/{param.replace(' ', '_').lower()}",
+                    "name": f"{solarcharger['name']} {param}",
+                    "unique_id": f"solarcharger_{solarcharger['id']}_{param.replace(' ', '_').lower()}",  # Removed CERBO_SERIAL_NO
+                    "state_topic": f"{HA_MQTT_BASE_TOPIC}/solarcharger/{solarcharger['id']}/{param.replace(' ', '_').lower()}",
                     "availability_topic": availability_topic,
                     "device": device,
                     "device_class": details.get("device_class"),
                     "unit_of_measurement": details.get("unit"),
                 }
-                discovery_topic = f"{HA_MQTT_DISCOVERY_TOPIC}/sensor/victron_{CERBO_SERIAL_NO}/solarcharger_{solarcharger['id']}_{param.replace(' ', '_').lower()}/config"
+                discovery_topic = f"{HA_MQTT_DISCOVERY_TOPIC}/sensor/solarcharger_{solarcharger['id']}_{param.replace(' ', '_').lower()}/config"  # Removed CERBO_SERIAL_NO
                 ha_mqtt_client.publish(discovery_topic, json.dumps(discovery_payload), retain=True)
 
     ha_mqtt_client.publish(availability_topic, "online")
 
+
+# HA Discovery Function for Grid Meters
 def ha_discovery_grid():
     # Base availability topic
-    availability_topic = f"{HA_MQTT_BASE_TOPIC}/{CERBO_SERIAL_NO}/availability"
-    logging.info("Publishing HA Solarcharger Discovery topics...")
+    availability_topic = f"{HA_MQTT_BASE_TOPIC}/availability"
+    logging.info("Publishing HA Grid Meter Discovery topics...")
     
     for grid in GRID_METERS:
         # Define device information
         device = {
             "manufacturer": "Victron",
             "model": grid['model'],
-            "identifiers": [f"victron_{CERBO_SERIAL_NO}_grid_{grid['id']}"],
+            "identifiers": [f"victron_grid_{grid['id']}"],  # Removed CERBO_SERIAL_NO
             "name": f"Victron {grid['name']}"
         }
-
 
         for param, details in READ_PARAMETER_MAP.items():
             if details['module_type'] == 'grid':
                 discovery_payload = {
                     "name": f"{param}",
-                    "unique_id": f"victron_{CERBO_SERIAL_NO}_grid_{grid['id']}_{param.replace(' ', '_').lower()}",
-                    "state_topic": f"{HA_MQTT_BASE_TOPIC}/{CERBO_SERIAL_NO}/grid/{grid['id']}/{param.replace(' ', '_').lower()}",
+                    "unique_id": f"grid_{grid['id']}_{param.replace(' ', '_').lower()}",  # Removed CERBO_SERIAL_NO
+                    "state_topic": f"{HA_MQTT_BASE_TOPIC}/grid/{grid['id']}/{param.replace(' ', '_').lower()}",
                     "availability_topic": availability_topic,
                     "device": device,
                     "device_class": details.get("device_class"),
                     "unit_of_measurement": details.get("unit"),
                 }
-                discovery_topic = f"{HA_MQTT_DISCOVERY_TOPIC}/sensor/victron_{CERBO_SERIAL_NO}/grid_{grid['id']}_{param.replace(' ', '_').lower()}/config"
+                discovery_topic = f"{HA_MQTT_DISCOVERY_TOPIC}/sensor/grid_{grid['id']}_{param.replace(' ', '_').lower()}/config"  # Removed CERBO_SERIAL_NO
                 ha_mqtt_client.publish(discovery_topic, json.dumps(discovery_payload), retain=True)
 
     ha_mqtt_client.publish(availability_topic, "online")
@@ -262,30 +261,29 @@ def ha_discovery_cerbo():
     
 def ha_discovery_inverter():
     # Base availability topic
-    availability_topic = f"{HA_MQTT_BASE_TOPIC}/{CERBO_SERIAL_NO}/availability"
-    logging.info("Publishing HA Solarcharger Discovery topics...")
+    availability_topic = f"{HA_MQTT_BASE_TOPIC}/availability"  # Removed CERBO_SERIAL_NO
+    logging.info("Publishing HA Inverter Discovery topics...")
     
     # Define device information
     device = {
         "manufacturer": "Victron",
         "model": INVERTER_MODEL,
-        "identifiers": [f"victron_{CERBO_SERIAL_NO}_inverter"],
+        "identifiers": [f"victron_inverter"],  # Removed CERBO_SERIAL_NO
         "name": f"Victron {INVERTER_MODEL}"
     }
-
 
     for param, details in READ_PARAMETER_MAP.items():
         if details['module_type'] == 'vebus':
             discovery_payload = {
                 "name": f"{param}",
-                "unique_id": f"victron_{CERBO_SERIAL_NO}_inverter_{param.replace(' ', '_').lower()}",
-                "state_topic": f"{HA_MQTT_BASE_TOPIC}/{CERBO_SERIAL_NO}/{details['module_type']}/276/{param.replace(' ', '_').lower()}",
+                "unique_id": f"inverter_{param.replace(' ', '_').lower()}",  # Removed CERBO_SERIAL_NO
+                "state_topic": f"{HA_MQTT_BASE_TOPIC}/{details['module_type']}/276/{param.replace(' ', '_').lower()}",  # Removed CERBO_SERIAL_NO
                 "availability_topic": availability_topic,
                 "device": device,
                 "device_class": details.get("device_class"),
                 "unit_of_measurement": details.get("unit"),
             }
-            discovery_topic = f"{HA_MQTT_DISCOVERY_TOPIC}/sensor/victron_{CERBO_SERIAL_NO}/inverter_{param.replace(' ', '_').lower()}/config"
+            discovery_topic = f"{HA_MQTT_DISCOVERY_TOPIC}/sensor/inverter_{param.replace(' ', '_').lower()}/config"  # Removed CERBO_SERIAL_NO
             ha_mqtt_client.publish(discovery_topic, json.dumps(discovery_payload), retain=True)
 
     ha_mqtt_client.publish(availability_topic, "online")
@@ -299,7 +297,7 @@ try:
     ha_discovery_inverter()
     ha_discovery_cerbo()
     while True:
-        time.sleep(5)
+        time.sleep(30)
         if cerbo_mqtt_client.is_connected():
             cerbo_mqtt_client.publish(f"R/{CERBO_SERIAL_NO}/keepalive")
         pass
