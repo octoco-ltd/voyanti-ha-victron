@@ -175,33 +175,28 @@ def ha_discovery_solarchargers():
             "manufacturer": "Victron",
             "model": solarcharger['model'],
             "identifiers": [f"victron_{CERBO_SERIAL_NO}_solarcharger_{solarcharger['id']}"],
-            "name": f"Victron {solarcharger['name']}"  # Retain descriptive name
+            "name": f"Victron {solarcharger['name']}"  # Device name remains descriptive
         }
 
         for param, details in READ_PARAMETER_MAP.items():
             if details['module_type'] == 'solarcharger':
-                # Debug input values
-                logging.debug(f"Processing solarcharger['name']: {solarcharger['name']}, param: {param}")
-                
-                # Remove duplication in name
-                if "MPPT" in param and "MPPT" in solarcharger['name']:
-                    display_name = f"{solarcharger['name']} {param.replace('MPPT', '').strip()}"
-                else:
-                    display_name = f"{solarcharger['name']} {param}"
-                
-                # Debug resulting name
+                # Use only the parameter (e.g., "Current") for the entity name
+                display_name = param.replace('MPPT', '').strip()  # e.g., "Current" or "Voltage"
+
+                # Log the generated name for debugging
                 logging.debug(f"Generated display_name: {display_name}")
 
                 discovery_payload = {
-                    "name": display_name,
-                    "unique_id": f"solarcharger_{solarcharger['id']}_{param.replace(' ', '_').lower()}",  # Use ID only
-                    "state_topic": f"{HA_MQTT_BASE_TOPIC}/{CERBO_SERIAL_NO}/solarcharger/{solarcharger['id']}/{param.replace(' ', '_').lower()}",  # Use ID only
+                    "name": display_name,  # Entity name is concise
+                    "unique_id": f"solarcharger_{solarcharger['id']}_{param.replace(' ', '_').lower()}",
+                    "state_topic": f"{HA_MQTT_BASE_TOPIC}/{CERBO_SERIAL_NO}/solarcharger/{solarcharger['id']}/{param.replace(' ', '_').lower()}",
                     "availability_topic": availability_topic,
                     "device": device,
                     "device_class": details.get("device_class"),
                     "unit_of_measurement": details.get("unit"),
                 }
-                discovery_topic = f"{HA_MQTT_DISCOVERY_TOPIC}/sensor/solarcharger_{solarcharger['id']}_{param.replace(' ', '_').lower()}/config"  # Use ID only
+
+                discovery_topic = f"{HA_MQTT_DISCOVERY_TOPIC}/sensor/solarcharger_{solarcharger['id']}_{param.replace(' ', '_').lower()}/config"
                 ha_mqtt_client.publish(discovery_topic, json.dumps(discovery_payload), retain=True)
 
     ha_mqtt_client.publish(availability_topic, "online")
