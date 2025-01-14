@@ -180,8 +180,9 @@ def ha_discovery_solarchargers():
 
         for param, details in READ_PARAMETER_MAP.items():
             if details['module_type'] == 'solarcharger':
+                # Use solarcharger['name'] directly
                 discovery_payload = {
-                    "name": f"{solarcharger['name']} {param}",
+                    "name": f"{solarcharger['name']}",
                     "unique_id": f"solarcharger_{solarcharger['id']}_{param.replace(' ', '_').lower()}",
                     "state_topic": f"{HA_MQTT_BASE_TOPIC}/{CERBO_SERIAL_NO}/solarcharger/{solarcharger['id']}/{param.replace(' ', '_').lower()}",
                     "availability_topic": availability_topic,
