@@ -238,9 +238,10 @@ def ha_discovery_grid():
                     "state_topic": f"{HA_MQTT_BASE_TOPIC}/{CERBO_SERIAL_NO}/grid/{grid['id']}/{param.replace(' ', '_').lower()}",
                     "availability_topic": availability_topic,
                     "device": device,
-                    "device_class": details.get("device_class"),
-                    "unit_of_measurement": details.get("unit"),
+                    "device_class": details.get("device_class", "none"),
+                    "unit_of_measurement": details.get("unit", "none"),
                 }
+            
 
                 discovery_topic = f"{HA_MQTT_DISCOVERY_TOPIC}/sensor/victron_{CERBO_SERIAL_NO}/grid_{grid['id']}_{param.replace(' ', '_').lower()}/config"
                 ha_mqtt_client.publish(discovery_topic, json.dumps(discovery_payload), retain=True)
