@@ -142,6 +142,11 @@ def cerbo_on_message(client, userdata, msg):
                 ha_mqtt_client.publish(f"{HA_MQTT_BASE_TOPIC}/{CERBO_SERIAL_NO}/availability", "online")
                 logging.debug(f"Published to {ha_topic}: {ha_payload}")
                 return  # Exit once a match is found
+            
+        if topic == f"N/{CERBO_SERIAL_NO}/settings/0/Settings/CGwacs/BatteryLife/MinimumSocLimit":
+            payload_json = json.loads(payload)
+            ha_payload = round(payload_json["value"], 2)
+            ha_mqtt_client.publish(f"{HA_MQTT_BASE_TOPIC}/{CERBO_SERIAL_NO}/settings/get/min_soc_limit", ha_payload, retain=False)
         else:
             logging.warning(f"No match found for topic_suffix: {topic_suffix}")
     else:
@@ -273,7 +278,6 @@ def ha_discovery_cerbo():
         "command_topic": f"{HA_MQTT_BASE_TOPIC}/{CERBO_SERIAL_NO}/settings/set/min_soc_limit",
         "command_template": '{"value": {{ value }} }',
         "state_topic": f"{HA_MQTT_BASE_TOPIC}/{CERBO_SERIAL_NO}/settings/get/min_soc_limit",
-        "value_template": "{{ value_json.value | round(0) }}",
         "min": 20,
         "max": 100,
         "step": 5,
