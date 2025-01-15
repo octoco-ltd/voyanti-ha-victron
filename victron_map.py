@@ -39,7 +39,14 @@ READ_PARAMETER_MAP = {
         "device_class": "none",
         "unit": None,
         "topic":  "SystemState/State",
-        "module_type": "system"
+        "module_type": "system",
+        "map": {
+            0: "Off",
+            2: "Low Power",
+            3: "Fault",
+            4: "Bulk",
+            252: "External Control"
+        }
     },
     "Load L1 Power": {
         "device_class": "power",

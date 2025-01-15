@@ -139,7 +139,10 @@ def cerbo_on_message(client, userdata, msg):
             if topic_suffix == expected_suffix:  # Exact match with full topic from victron_map.py
                 ha_topic = f"{HA_MQTT_BASE_TOPIC}/{CERBO_SERIAL_NO}/{module_type}/{module_id}/{param.replace(' ', '_').lower()}"
                 payload_json = json.loads(payload)
-                ha_payload = round(payload_json["value"], 2)
+                if "map" in details:
+                    ha_payload = details["map"].get(payload_json["value"])
+                else:
+                    ha_payload = round(payload_json["value"], 2)
                 # Publish to the Home Assistant topic
                 ha_mqtt_client.publish(ha_topic, ha_payload, retain=False)
                 ha_mqtt_client.publish(f"{HA_MQTT_BASE_TOPIC}/{CERBO_SERIAL_NO}/availability", "online")
