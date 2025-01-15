@@ -36,18 +36,28 @@ READ_PARAMETER_MAP = {
         "module_type": "system"
     },
     "Inverter State": {
-        "device_class": "none",
-        "unit": None,
-        "topic":  "SystemState/State",
+        "topic": "SystemState/State",
         "module_type": "system",
         "map": {
             0: "Off",
-            2: "Low Power",
-            3: "Fault",
-            4: "Bulk",
-            252: "External Control"
+            1: "Low power",
+            2: "VE.Bus Fault condition",
+            3: "Bulk charging",
+            4: "Absorption charging",
+            5: "Float charging",
+            6: "Storage mode",
+            7: "Equalisation charging",
+            8: "Passthru",
+            9: "Inverting",
+            10: "Assisting",
+            244: "Battery Sustain",
+            252: "External control",
+            256: "Discharging",
+            257: "Sustain",
+            258: "Recharge",
+            259: "Scheduled recharge"
         }
-    },
+     },
     "Load L1 Power": {
         "device_class": "power",
         "unit": "W",
