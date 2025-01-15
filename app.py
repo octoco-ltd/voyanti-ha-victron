@@ -88,6 +88,7 @@ def ha_on_message(client, userdata, msg):
     # Get the topic
     topic = msg.topic
     if topic == f"{HA_MQTT_BASE_TOPIC}/{CERBO_SERIAL_NO}/settings/set/min_soc_limit":
+        print(f"W/{CERBO_SERIAL_NO}/settings/0/Settings/CGwacs/BatteryLife/MinimumSocLimit")
         payload = msg.payload.decode("utf-8")
         ha_paylod = { "value": payload }
         cerbo_mqtt_client.publish(f"W/{CERBO_SERIAL_NO}/settings/0/Settings/CGwacs/BatteryLife/MinimumSocLimit", ha_paylod)
