@@ -205,6 +205,10 @@ def ha_discovery_solarchargers():
                     "device_class": details.get("device_class"),
                     "unit_of_measurement": details.get("unit"),
                 }
+                if "device_class" in details:
+                    discovery_payload["device_class"] = details.get("device_class")
+                if "unit_of_measurement" in details:
+                    discovery_payload["unit_of_measurement"] = details.get("unit")
 
                 discovery_topic = f"{HA_MQTT_DISCOVERY_TOPIC}/sensor/victron_{CERBO_SERIAL_NO}/solarcharger_{solarcharger['id']}_{param.replace(' ', '_').lower()}/config"
                 ha_mqtt_client.publish(discovery_topic, json.dumps(discovery_payload), retain=True)
@@ -238,9 +242,13 @@ def ha_discovery_grid():
                     "state_topic": f"{HA_MQTT_BASE_TOPIC}/{CERBO_SERIAL_NO}/grid/{grid['id']}/{param.replace(' ', '_').lower()}",
                     "availability_topic": availability_topic,
                     "device": device,
-                    "device_class": details.get("device_class", "none"),
-                    "unit_of_measurement": details.get("unit", "none"),
+                    "device_class": details.get("device_class"),
+                    "unit_of_measurement": details.get("unit"),
                 }
+                if "device_class" in details:
+                    discovery_payload["device_class"] = details.get("device_class")
+                if "unit_of_measurement" in details:
+                    discovery_payload["unit_of_measurement"] = details.get("unit")
             
 
                 discovery_topic = f"{HA_MQTT_DISCOVERY_TOPIC}/sensor/victron_{CERBO_SERIAL_NO}/grid_{grid['id']}_{param.replace(' ', '_').lower()}/config"
@@ -271,9 +279,13 @@ def ha_discovery_cerbo():
                 "state_topic": f"{HA_MQTT_BASE_TOPIC}/{CERBO_SERIAL_NO}/{details['module_type']}/0/{param.replace(' ', '_').lower()}",
                 "availability_topic": availability_topic,
                 "device": device,
-                "device_class": details.get("device_class", "none"),
-                "unit_of_measurement": details.get("unit", "none"),
+                "device_class": details.get("device_class"),
+                "unit_of_measurement": details.get("unit"),
             }
+            if "device_class" in details:
+                discovery_payload["device_class"] = details.get("device_class")
+            if "unit_of_measurement" in details:
+                discovery_payload["unit_of_measurement"] = details.get("unit")
             discovery_topic = f"{HA_MQTT_DISCOVERY_TOPIC}/sensor/victron_{CERBO_SERIAL_NO}/cerbo_{param.replace(' ', '_').lower()}/config"
             ha_mqtt_client.publish(discovery_topic, json.dumps(discovery_payload), retain=True)
 
@@ -321,9 +333,13 @@ def ha_discovery_inverter():
                 "state_topic": f"{HA_MQTT_BASE_TOPIC}/{CERBO_SERIAL_NO}/{details['module_type']}/276/{param.replace(' ', '_').lower()}",
                 "availability_topic": availability_topic,  # Includes CERBO_SERIAL_NO
                 "device": device,
-                "device_class": details.get("device_class", "none"),
-                "unit_of_measurement": details.get("unit", "none"),
+                "device_class": details.get("device_class"),
+                "unit_of_measurement": details.get("unit"),
             }
+            if "device_class" in details:
+                discovery_payload["device_class"] = details.get("device_class")
+            if "unit_of_measurement" in details:
+                discovery_payload["unit_of_measurement"] = details.get("unit")
             # Discovery topic does not need CERBO_SERIAL_NO
             discovery_topic = f"{HA_MQTT_DISCOVERY_TOPIC}/sensor/victron_{CERBO_SERIAL_NO}/inverter_{param.replace(' ', '_').lower()}/config"
             ha_mqtt_client.publish(discovery_topic, json.dumps(discovery_payload), retain=True)
