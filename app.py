@@ -115,7 +115,8 @@ def cerbo_on_disconnect(client, userdata, rc):
 def cerbo_on_message(client, userdata, msg):
     global ha_mqtt_connected
     global ha_mqtt_client
-    if ha_mqtt_connected == True:
+
+    if ha_mqtt_connected:
         # Get the topic and payload
         topic = msg.topic
         payload = msg.payload.decode("utf-8")
@@ -124,15 +125,15 @@ def cerbo_on_message(client, userdata, msg):
         topic_parts = topic.split("/")
         if len(topic_parts) < 4:
             return
-        
+
         module_type = topic_parts[2]
         module_id = topic_parts[3]
         topic_suffix = "/".join(topic_parts[4:])  # Get the part after the ID
 
-        # Find the matching parameter in READ_PARAMETER_MAP
+        # Correctly match topic_suffix with READ_PARAMETER_MAP
         for param, details in READ_PARAMETER_MAP.items():
-            if details["topic"] == topic_suffix:
-                # Found a match, construct Home Assistant topic and payload
+            expected_suffix = details["topic"]
+            if topic_suffix == expected_suffix:  # Exact match with full topic from victron_map.py
                 ha_topic = f"{HA_MQTT_BASE_TOPIC}/{CERBO_SERIAL_NO}/{module_type}/{module_id}/{param.replace(' ', '_').lower()}"
                 payload_json = json.loads(payload)
                 ha_payload = round(payload_json["value"], 2)
@@ -140,12 +141,11 @@ def cerbo_on_message(client, userdata, msg):
                 ha_mqtt_client.publish(ha_topic, ha_payload, retain=False)
                 ha_mqtt_client.publish(f"{HA_MQTT_BASE_TOPIC}/{CERBO_SERIAL_NO}/availability", "online")
                 logging.debug(f"Published to {ha_topic}: {ha_payload}")
-                break
+                return  # Exit once a match is found
         else:
-            pass
-            # print(f"Topic {topic_suffix} not found in READ_PARAMETER_MAP")
+            logging.warning(f"No match found for topic_suffix: {topic_suffix}")
     else:
-        logging.info("MQTT not connected ... ")
+        logging.info("MQTT not connected ...")
 
 # Initialize HA MQTT client
 cerbo_mqtt_client = mqtt.Client()
