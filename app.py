@@ -236,7 +236,8 @@ def ha_discovery_grid():
                 ha_mqtt_client.publish(discovery_topic, json.dumps(discovery_payload), retain=True)
 
     ha_mqtt_client.publish(availability_topic, "online")
-        
+
+# HA Discovery Function for Cerbo        
 def ha_discovery_cerbo():
     # Base availability topic
     availability_topic = f"{HA_MQTT_BASE_TOPIC}/{CERBO_SERIAL_NO}/availability"
