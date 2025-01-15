@@ -64,6 +64,7 @@ ha_mqtt_connected = False
 
 # Initialize HA MQTT client
 ha_mqtt_client = mqtt.Client()
+cerbo_mqtt_client = mqtt.Client()
 
 
 def ha_on_connect(client, userdata, flags, rc):
@@ -88,7 +89,8 @@ def ha_on_message(client, userdata, msg):
     topic = msg.topic
     if topic == f"{HA_MQTT_BASE_TOPIC}/{CERBO_SERIAL_NO}/settings/set/min_soc_limit":
         payload = msg.payload.decode("utf-8")
-        cerbo_mqtt_client.publish(f"victron/W/{CERBO_SERIAL_NO}/settings/0/Settings/CGwacs/BatteryLife/MinimumSocLimit", payload)
+        ha_paylod = { "value": payload }
+        cerbo_mqtt_client.publish(f"W/{CERBO_SERIAL_NO}/settings/0/Settings/CGwacs/BatteryLife/MinimumSocLimit", ha_paylod)
         
 
 ha_mqtt_client.on_connect = ha_on_connect
@@ -153,7 +155,6 @@ def cerbo_on_message(client, userdata, msg):
         logging.info("MQTT not connected ...")
 
 # Initialize HA MQTT client
-cerbo_mqtt_client = mqtt.Client()
 cerbo_mqtt_client.on_connect = cerbo_on_connect
 cerbo_mqtt_client.on_disconnect = cerbo_on_disconnect
 cerbo_mqtt_client.on_message = cerbo_on_message
@@ -276,7 +277,6 @@ def ha_discovery_cerbo():
         "name": "Minimum SOC Limit",
         "unique_id": f"victron_{CERBO_SERIAL_NO}_cerbo_min_soc_limit",
         "command_topic": f"{HA_MQTT_BASE_TOPIC}/{CERBO_SERIAL_NO}/settings/set/min_soc_limit",
-        "command_template": '{"value": {{ value }} }',
         "state_topic": f"{HA_MQTT_BASE_TOPIC}/{CERBO_SERIAL_NO}/settings/get/min_soc_limit",
         "min": 20,
         "max": 100,
