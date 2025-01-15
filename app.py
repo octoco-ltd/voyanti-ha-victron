@@ -270,9 +270,9 @@ def ha_discovery_cerbo():
     min_soc_limit_payload = {
         "name": "Minimum SOC Limit",
         "unique_id": f"victron_{CERBO_SERIAL_NO}_cerbo_min_soc_limit",
-        "command_topic": f"{HA_MQTT_BASE_TOPIC}/{CERBO_SERIAL_NO}/settings/get/min_soc_limit",
+        "command_topic": f"{HA_MQTT_BASE_TOPIC}/{CERBO_SERIAL_NO}/settings/set/min_soc_limit",
         "command_template": '{"value": {{ value }} }',
-        "state_topic": f"{HA_MQTT_BASE_TOPIC}/{CERBO_SERIAL_NO}/settings/set/min_soc_limit",
+        "state_topic": f"{HA_MQTT_BASE_TOPIC}/{CERBO_SERIAL_NO}/settings/get/min_soc_limit",
         "value_template": "{{ value_json.value | round(0) }}",
         "min": 20,
         "max": 100,
