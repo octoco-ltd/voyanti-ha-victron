@@ -62,10 +62,14 @@ GRID_METERS = config['grid_meters']
 
 ha_mqtt_connected = False
 
+# Initialize HA MQTT client
+ha_mqtt_client = mqtt.Client()
+
 
 def ha_on_connect(client, userdata, flags, rc):
     global ha_mqtt_connected
     ha_mqtt_connected = True
+    ha_mqtt_client.subscribe(f"{HA_MQTT_BASE_TOPIC}/{CERBO_SERIAL_NO}/settings/set/#")
     logging.info("Connected to MQTT broker")
     # Subscribe here to topics in HA that we need to listen to i.e. set SoC topic etc.
 
@@ -82,13 +86,11 @@ def ha_on_disconnect(client, userdata, rc):
 def ha_on_message(client, userdata, msg):
     # Get the topic
     topic = msg.topic
-    if topic == f"{HA_MQTT_BASE_TOPIC}/{CERBO_SERIAL_NO}/settings/get/min_soc_limit":
+    if topic == f"{HA_MQTT_BASE_TOPIC}/{CERBO_SERIAL_NO}/settings/set/min_soc_limit":
         payload = msg.payload.decode("utf-8")
         cerbo_mqtt_client.publish(f"victron/W/{CERBO_SERIAL_NO}/settings/0/Settings/CGwacs/BatteryLife/MinimumSocLimit", payload)
         
-    
-# Initialize HA MQTT client
-ha_mqtt_client = mqtt.Client()
+
 ha_mqtt_client.on_connect = ha_on_connect
 ha_mqtt_client.on_disconnect = ha_on_disconnect
 ha_mqtt_client.on_message = ha_on_message
