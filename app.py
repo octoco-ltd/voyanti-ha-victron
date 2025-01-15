@@ -271,8 +271,8 @@ def ha_discovery_cerbo():
                 "state_topic": f"{HA_MQTT_BASE_TOPIC}/{CERBO_SERIAL_NO}/{details['module_type']}/0/{param.replace(' ', '_').lower()}",
                 "availability_topic": availability_topic,
                 "device": device,
-                "device_class": details.get("device_class"),
-                "unit_of_measurement": details.get("unit"),
+                "device_class": details.get("device_class", "none"),
+                "unit_of_measurement": details.get("unit", "none"),
             }
             discovery_topic = f"{HA_MQTT_DISCOVERY_TOPIC}/sensor/victron_{CERBO_SERIAL_NO}/cerbo_{param.replace(' ', '_').lower()}/config"
             ha_mqtt_client.publish(discovery_topic, json.dumps(discovery_payload), retain=True)
@@ -321,8 +321,8 @@ def ha_discovery_inverter():
                 "state_topic": f"{HA_MQTT_BASE_TOPIC}/{CERBO_SERIAL_NO}/{details['module_type']}/276/{param.replace(' ', '_').lower()}",
                 "availability_topic": availability_topic,  # Includes CERBO_SERIAL_NO
                 "device": device,
-                "device_class": details.get("device_class"),
-                "unit_of_measurement": details.get("unit"),
+                "device_class": details.get("device_class", "none"),
+                "unit_of_measurement": details.get("unit", "none"),
             }
             # Discovery topic does not need CERBO_SERIAL_NO
             discovery_topic = f"{HA_MQTT_DISCOVERY_TOPIC}/sensor/victron_{CERBO_SERIAL_NO}/inverter_{param.replace(' ', '_').lower()}/config"
