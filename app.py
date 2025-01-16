@@ -136,7 +136,7 @@ def cerbo_on_message(client, userdata, msg):
         # Correctly match topic_suffix with READ_PARAMETER_MAP
         for param, details in READ_PARAMETER_MAP.items():
             expected_suffix = details["topic"]
-            if topic_suffix == expected_suffix:  # Exact match with full topic from victron_map.py
+            if topic_suffix == expected_suffix and module_type == details["module_type"]:  # Exact match with full topic from victron_map.py
                 ha_topic = f"{HA_MQTT_BASE_TOPIC}/{CERBO_SERIAL_NO}/{module_type}/{module_id}/{param.replace(' ', '_').lower()}"
                 payload_json = json.loads(payload)
                 if "map" in details:
