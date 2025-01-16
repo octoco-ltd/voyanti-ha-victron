@@ -261,7 +261,7 @@ READ_PARAMETER_MAP = {
         "module_type": "solarcharger"
     },
     "MPPT State": {
-        "topic": "/State",
+        "topic": "State",
         "module_type": "vebus",
         "map": {
             0: "Off",
@@ -275,7 +275,7 @@ READ_PARAMETER_MAP = {
         }
     },
     "MPPT Error": {
-        "topic": "/ErrorCode",
+        "topic": "ErrorCode",
         "module_type": "vebus",
         "map": {
             0: "No error",
@@ -298,7 +298,7 @@ READ_PARAMETER_MAP = {
         }
     },
     "MPPT Operation Mode": {
-        "topic": "/MppOperationMode",
+        "topic": "MppOperationMode",
         "module_type": "vebus",
         "map": {
             0: "Off",
