@@ -30,11 +30,69 @@ READ_PARAMETER_MAP = {
         "module_type": "system"
     },
     "Active Input Source": {
-        "device_class": "none",
-        "unit": None,
         "topic":  "Ac/ActiveIn/Source",
-        "module_type": "system"
-    },
+        "module_type": "system",
+        "map": {
+            0: "Not available",
+            1: "Grid",
+            2: "Genset",
+            3: "Shore",
+            240: "Inverting or Island mode"            
+        }
+     },
+    "FeedbackEnabled": {
+        "topic":  "Ac/ActiveIn/FeedbackEnabled",
+        "module_type": "system",
+        "map": {
+            0: "No",
+            1: "Yes"          
+        }
+     },
+    "NumberOfPhases": {
+        "topic":  "Ac/Consumption/NumberOfPhases",
+        "module_type": "system",
+        "map": {
+            1: "Single",
+            2: "Split",
+            3: "Three"          
+        }
+     },
+    "AC Input 0 Source": {
+        "topic":  "Ac/In/0/Source",
+        "module_type": "system",
+        "map": {
+            0: "Not used",
+            1: "Grid",  
+            2: "Generator",
+            3: "Shore"  
+        }
+     },
+    "AC Input 0 Status": {
+        "topic":  "Ac/In/0/Connected",
+        "module_type": "system",
+        "map": {
+            0: "Disconected",
+            1: "Connected"  
+        }
+     },
+    "AC Input 1 Source": {
+        "topic":  "Ac/In/1/Source",
+        "module_type": "system",
+        "map": {
+            0: "Not used",
+            1: "Grid",  
+            2: "Generator",
+            3: "Shore"  
+        }
+     },
+    "AC Input 1 Status": {
+        "topic":  "Ac/In/1/Connected",
+        "module_type": "system",
+        "map": {
+            0: "Disconected",
+            1: "Connected"  
+        }
+     },
     "Inverter State": {
         "topic": "SystemState/State",
         "module_type": "system",
@@ -58,14 +116,86 @@ READ_PARAMETER_MAP = {
             259: "Scheduled recharge"
         }
      },
-    "High DC Current Alarm": {
+    "High DC Current Alarm Status": {
         "topic": "Alarms/HighDcCurrent",
         "module_type": "vebus",
         "map": {
             0: "OK",
-            2: "High DC current condition"
+            2: "HighDCcurrent"
         }
      },
+    "High DC Voltage Alarm Status": {
+        "topic": "Alarms/HighDcVoltage",
+        "module_type": "vebus",
+        "map": {
+            0: "OK",
+            2: "HighDCvoltage"
+        }
+     },
+    "PhaseRotation Alarm Status": {
+        "topic": "Alarms/PhaseRotation",
+        "module_type": "vebus",
+        "map": {
+            0: "OK",
+            2: "PhaseRotation"
+        }
+     },
+    "Low Battery Alarm Status": {
+        "topic": "Alarms/LowBattery",
+        "module_type": "vebus",
+        "map": {
+            0: "OK",
+            2: "LowBattery"
+        }
+     },
+    "Inverter L1 HighTemperature Alarm Status": {
+        "topic": "Alarms/L1/HighTemperature",
+        "module_type": "vebus",
+        "map": {
+            0: "OK",
+            2: "HighTemperature"
+        }
+     },
+    "Inverter L2 HighTemperature Alarm Status": {
+        "topic": "Alarms/L2/HighTemperature",
+        "module_type": "vebus",
+        "map": {
+            0: "OK",
+            2: "HighTemperaturee"
+        }
+     },
+    "Inverter L3 HighTemperature Alarm Status": {
+        "topic": "Alarms/L3/HighTemperature",
+        "module_type": "vebus",
+        "map": {
+            0: "OK",
+            2: "HighTemperature"
+        }
+     },     
+    "Inverter L1 Overload Alarm Status": {
+        "topic": "Alarms/L1/Overload",
+        "module_type": "vebus",
+        "map": {
+            0: "OK",
+            2: "Overload"
+        }
+     },
+    "Inverter L2 Overload Alarm Status": {
+        "topic": "Alarms/L2/Overload",
+        "module_type": "vebus",
+        "map": {
+            0: "OK",
+            2: "Overload"
+        }
+     },
+    "Inverter L3 Overload Alarm Status": {
+        "topic": "Alarms/L3/Overload",
+        "module_type": "vebus",
+        "map": {
+            0: "OK",
+            2: "Overload"
+        }
+     },  
     "State": {
         "topic": "State",
         "module_type": "vebus",
