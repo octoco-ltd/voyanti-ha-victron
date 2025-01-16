@@ -59,7 +59,7 @@ READ_PARAMETER_MAP = {
         }
      },
     "High DC Current Alarm": {
-        "topic": "/Alarms/HighDcCurrent",
+        "topic": "Alarms/HighDcCurrent",
         "module_type": "vebus",
         "map": {
             0: "OK",
@@ -67,7 +67,7 @@ READ_PARAMETER_MAP = {
         }
      },
     "State": {
-        "topic": "/State",
+        "topic": "State",
         "module_type": "vebus",
         "map": {
             0: "Off",
@@ -257,7 +257,7 @@ READ_PARAMETER_MAP = {
     "Total kWh produced": {
         "device_class": "energy",
         "unit": "kWh",
-        "topic":  "/Yield/System",
+        "topic":  "Yield/System",
         "module_type": "solarcharger"
     },
     "MPPT State": {
