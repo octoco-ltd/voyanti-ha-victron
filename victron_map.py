@@ -227,7 +227,7 @@ READ_PARAMETER_MAP = {
         "module_type": "vebus"
     },
     "Load L1 Apparent Power": {
-        "device_class": "apparent_power:",
+        "device_class": "apparent_power",
         "state_class": "measurement",
         "unit": "VA",
         "topic":  "Ac/Out/L1/S",
@@ -255,7 +255,7 @@ READ_PARAMETER_MAP = {
         "module_type": "vebus"
     },
     "Load L2 Apparent Power": {
-        "device_class": "apparent_power:",
+        "device_class": "apparent_power",
         "state_class": "measurement",
         "unit": "VA",
         "topic":  "Ac/Out/L2/S",
@@ -283,7 +283,7 @@ READ_PARAMETER_MAP = {
         "module_type": "vebus"
     },
     "Load L3 Apparent Power": {
-        "device_class": "apparent_power:",
+        "device_class": "apparent_power",
         "state_class": "measurement",
         "unit": "VA",
         "topic":  "Ac/Out/L3/S",
@@ -311,7 +311,7 @@ READ_PARAMETER_MAP = {
         "module_type": "vebus"
     },
     "Total Apparant Load Power": {
-        "device_class": "apparent_power:",
+        "device_class": "apparent_power",
         "state_class": "measurement",
         "unit": "VA",
         "topic":  "Ac/Out/S",
