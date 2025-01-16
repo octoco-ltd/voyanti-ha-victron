@@ -67,7 +67,7 @@ READ_PARAMETER_MAP = {
             3: "Shore"  
         }
      },
-    "AC Input 0 Status": {
+    "AC Input 0": {
         "topic":  "Ac/In/0/Connected",
         "module_type": "system",
         "map": {
@@ -85,7 +85,7 @@ READ_PARAMETER_MAP = {
             3: "Shore"  
         }
      },
-    "AC Input 1 Status": {
+    "AC Input 1": {
         "topic":  "Ac/In/1/Connected",
         "module_type": "system",
         "map": {
@@ -93,7 +93,7 @@ READ_PARAMETER_MAP = {
             1: "Connected"  
         }
      },
-    "Inverter State": {
+    "System State": {
         "topic": "SystemState/State",
         "module_type": "system",
         "map": {
@@ -116,7 +116,7 @@ READ_PARAMETER_MAP = {
             259: "Scheduled recharge"
         }
      },
-    "High DC Current Alarm Status": {
+    "High DC Current Alarm": {
         "topic": "Alarms/HighDcCurrent",
         "module_type": "vebus",
         "map": {
@@ -124,7 +124,7 @@ READ_PARAMETER_MAP = {
             2: "HighDCcurrent"
         }
      },
-    "High DC Voltage Alarm Status": {
+    "High DC Voltage Alarm": {
         "topic": "Alarms/HighDcVoltage",
         "module_type": "vebus",
         "map": {
@@ -132,7 +132,7 @@ READ_PARAMETER_MAP = {
             2: "HighDCvoltage"
         }
      },
-    "PhaseRotation Alarm Status": {
+    "PhaseRotation Alarm": {
         "topic": "Alarms/PhaseRotation",
         "module_type": "vebus",
         "map": {
@@ -140,7 +140,7 @@ READ_PARAMETER_MAP = {
             2: "PhaseRotation"
         }
      },
-    "Low Battery Alarm Status": {
+    "Low Battery Alarm": {
         "topic": "Alarms/LowBattery",
         "module_type": "vebus",
         "map": {
@@ -148,7 +148,7 @@ READ_PARAMETER_MAP = {
             2: "LowBattery"
         }
      },
-    "Inverter L1 HighTemperature Alarm Status": {
+    "L1 HighTemperature Alarm": {
         "topic": "Alarms/L1/HighTemperature",
         "module_type": "vebus",
         "map": {
@@ -156,7 +156,7 @@ READ_PARAMETER_MAP = {
             2: "HighTemperature"
         }
      },
-    "Inverter L2 HighTemperature Alarm Status": {
+    "L2 HighTemperature Alarm": {
         "topic": "Alarms/L2/HighTemperature",
         "module_type": "vebus",
         "map": {
@@ -164,7 +164,7 @@ READ_PARAMETER_MAP = {
             2: "HighTemperaturee"
         }
      },
-    "Inverter L3 HighTemperature Alarm Status": {
+    "L3 HighTemperature Alarm": {
         "topic": "Alarms/L3/HighTemperature",
         "module_type": "vebus",
         "map": {
@@ -172,7 +172,7 @@ READ_PARAMETER_MAP = {
             2: "HighTemperature"
         }
      },     
-    "Inverter L1 Overload Alarm Status": {
+    "L1 Overload Alarm": {
         "topic": "Alarms/L1/Overload",
         "module_type": "vebus",
         "map": {
@@ -180,7 +180,7 @@ READ_PARAMETER_MAP = {
             2: "Overload"
         }
      },
-    "Inverter L2 Overload Alarm Status": {
+    "L2 Overload Alarm": {
         "topic": "Alarms/L2/Overload",
         "module_type": "vebus",
         "map": {
@@ -188,7 +188,7 @@ READ_PARAMETER_MAP = {
             2: "Overload"
         }
      },
-    "Inverter L3 Overload Alarm Status": {
+    "L3 Overload Alarm": {
         "topic": "Alarms/L3/Overload",
         "module_type": "vebus",
         "map": {
@@ -196,7 +196,7 @@ READ_PARAMETER_MAP = {
             2: "Overload"
         }
      },  
-    "State": {
+    "Inverter State": {
         "topic": "State",
         "module_type": "vebus",
         "map": {
