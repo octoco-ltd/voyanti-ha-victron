@@ -58,6 +58,34 @@ READ_PARAMETER_MAP = {
             259: "Scheduled recharge"
         }
      },
+    "High DC Current Alarm": {
+        "topic": "/Alarms/HighDcCurrent",
+        "module_type": "vebus",
+        "map": {
+            0: "OK",
+            2: "High DC current condition"
+        }
+     },
+    "State": {
+        "topic": "/State",
+        "module_type": "vebus",
+        "map": {
+            0: "Off",
+            1: "Low power",
+            2: "Fault condition",
+            3: "Bulk charging",
+            4: "Absorption charging",
+            5: "Float charging",
+            6: "Storage mode",
+            7: "Equalisation charging",
+            8: "Passthru",
+            9: "Inverting",
+            10: "Power assist",
+            11: "Power supply mode",
+            244: "Sustain (Prefer Renewable Energy)",
+            252: "External control",
+        }
+     },
     "Load L1 Power": {
         "device_class": "power",
         "unit": "W",
@@ -226,10 +254,56 @@ READ_PARAMETER_MAP = {
         "topic":  "Yield/Power",
         "module_type": "solarcharger"
     },
-    "MPPT State": {
-        "device_class": "none",
-        "unit": None,
-        "topic":  "State",
+    "Total kWh produced": {
+        "device_class": "energy",
+        "unit": "kWh",
+        "topic":  "/Yield/System",
         "module_type": "solarcharger"
     },
+    "MPPT State": {
+        "topic": "/State",
+        "module_type": "vebus",
+        "map": {
+            0: "Off",
+            2: "Fault",
+            3: "Bulk",
+            4: "Absorption",
+            5: "Float",
+            6: "Storage",
+            7: "Equalize",
+            252: "External control",
+        }
+    },
+    "MPPT Error": {
+        "topic": "/ErrorCode",
+        "module_type": "vebus",
+        "map": {
+            0: "No error",
+            1: "Battery temperature too high",
+            2: "Battery voltage too high",
+            3: "Battery temperature sensor miswired (+)",
+            4: "Battery temperature sensor miswired (-)",
+            5: "Battery temperature sensor disconnected",
+            6: "Battery voltage sense miswired (+)",
+            7: "Battery voltage sense miswired (-)",
+            8: "Battery voltage sense disconnected",
+            9: "Battery voltage wire losses too high",
+            17: "Charger temperature too high",
+            18: "Charger over-current",
+            19: "Charger current polarity reversed",
+            20: "Bulk time limit reached",
+            22: "Charger temperature sensor miswired",
+            23: "Charger temperature sensor disconnected",
+            34: "Input current too high"
+        }
+    },
+    "MPPT Operation Mode": {
+        "topic": "/MppOperationMode",
+        "module_type": "vebus",
+        "map": {
+            0: "Off",
+            1: "Voltage or Current limited",
+            2: "Active",
+        }
+     },    
 }
