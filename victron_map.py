@@ -262,7 +262,7 @@ READ_PARAMETER_MAP = {
     },
     "MPPT State": {
         "topic": "State",
-        "module_type": "vebus",
+        "module_type": "solarcharger",
         "map": {
             0: "Off",
             2: "Fault",
@@ -276,7 +276,7 @@ READ_PARAMETER_MAP = {
     },
     "MPPT Error": {
         "topic": "ErrorCode",
-        "module_type": "vebus",
+        "module_type": "solarcharger",
         "map": {
             0: "No error",
             1: "Battery temperature too high",
@@ -299,7 +299,7 @@ READ_PARAMETER_MAP = {
     },
     "MPPT Operation Mode": {
         "topic": "MppOperationMode",
-        "module_type": "vebus",
+        "module_type": "solarcharger",
         "map": {
             0: "Off",
             1: "Voltage or Current limited",
