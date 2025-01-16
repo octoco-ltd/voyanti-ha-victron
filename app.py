@@ -203,10 +203,13 @@ def ha_discovery_solarchargers():
                     "availability_topic": availability_topic,
                     "device": device,
                     "device_class": details.get("device_class"),
+                    "state_class": details.get("state_class"),
                     "unit_of_measurement": details.get("unit"),
                 }
                 if "device_class" in details:
                     discovery_payload["device_class"] = details.get("device_class")
+                if "state_class" in details:
+                    discovery_payload["state_class"] = details.get("state_class")
                 if "unit_of_measurement" in details:
                     discovery_payload["unit_of_measurement"] = details.get("unit")
 
@@ -243,10 +246,13 @@ def ha_discovery_grid():
                     "availability_topic": availability_topic,
                     "device": device,
                     "device_class": details.get("device_class"),
+                    "state_class": details.get("state_class"),
                     "unit_of_measurement": details.get("unit"),
                 }
                 if "device_class" in details:
                     discovery_payload["device_class"] = details.get("device_class")
+                if "state_class" in details:
+                    discovery_payload["state_class"] = details.get("state_class")
                 if "unit_of_measurement" in details:
                     discovery_payload["unit_of_measurement"] = details.get("unit")
             
@@ -280,10 +286,13 @@ def ha_discovery_cerbo():
                 "availability_topic": availability_topic,
                 "device": device,
                 "device_class": details.get("device_class"),
+                "state_class": details.get("state_class"),
                 "unit_of_measurement": details.get("unit"),
             }
             if "device_class" in details:
                 discovery_payload["device_class"] = details.get("device_class")
+            if "state_class" in details:
+                discovery_payload["state_class"] = details.get("state_class")
             if "unit_of_measurement" in details:
                 discovery_payload["unit_of_measurement"] = details.get("unit")
             discovery_topic = f"{HA_MQTT_DISCOVERY_TOPIC}/sensor/victron_{CERBO_SERIAL_NO}/cerbo_{param.replace(' ', '_').lower()}/config"
@@ -334,10 +343,13 @@ def ha_discovery_inverter():
                 "availability_topic": availability_topic,  # Includes CERBO_SERIAL_NO
                 "device": device,
                 "device_class": details.get("device_class"),
+                "state_class": details.get("state_class"),
                 "unit_of_measurement": details.get("unit"),
             }
             if "device_class" in details:
                 discovery_payload["device_class"] = details.get("device_class")
+            if "state_class" in details:
+                discovery_payload["state_class"] = details.get("state_class")
             if "unit_of_measurement" in details:
                 discovery_payload["unit_of_measurement"] = details.get("unit")
             # Discovery topic does not need CERBO_SERIAL_NO
