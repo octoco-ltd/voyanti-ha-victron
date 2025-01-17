@@ -132,13 +132,13 @@ def cerbo_on_message(client, userdata, msg):
         topic_suffix = "/".join(topic_parts[4:])  # Get the part after the ID
 
         for param, details in READ_PARAMETER_MAP.items():
-            # Skip updates for unused AC inputs
-            if param == "AC Input 1" and not AC_INPUTS.get("input_1", True):
-                logging.debug(f"Skipping update for AC Input 1 as it is not used.")
-                continue
-            if param == "AC Input 2" and not AC_INPUTS.get("input_2", True):
-                logging.debug(f"Skipping update for AC Input 2 as it is not used.")
-                continue
+            # # Skip updates for unused AC inputs
+            # if param == "AC Input 1" and not AC_INPUTS.get("input_1", True):
+            #     logging.debug(f"Skipping update for AC Input 1 as it is not used.")
+            #     continue
+            # if param == "AC Input 2" and not AC_INPUTS.get("input_2", True):
+            #     logging.debug(f"Skipping update for AC Input 2 as it is not used.")
+            #     continue
 
             expected_suffix = details["topic"]
             if topic_suffix == expected_suffix and module_type == details["module_type"]:  
@@ -290,12 +290,12 @@ def ha_discovery_cerbo():
     # Publish discovery messages for existing parameters
     for param, details in READ_PARAMETER_MAP.items():
         # Skip discovery for unused AC inputs
-        if param == "AC Input 1" and not AC_INPUTS.get("input_1", True):
-            logging.debug("Skipping discovery for AC Input 1 as it is not used.")
-            continue
-        if param == "AC Input 2" and not AC_INPUTS.get("input_2", True):
-            logging.debug("Skipping discovery for AC Input 2 as it is not used.")
-            continue
+        # if param == "AC Input 1" and not AC_INPUTS.get("input_1", True):
+        #     logging.debug("Skipping discovery for AC Input 1 as it is not used.")
+        #     continue
+        # if param == "AC Input 2" and not AC_INPUTS.get("input_2", True):
+        #     logging.debug("Skipping discovery for AC Input 2 as it is not used.")
+        #     continue
 
         if details['module_type'] == 'system' or details['module_type'] == 'settings':
             discovery_payload = {
