@@ -115,17 +115,14 @@ def cerbo_on_disconnect(client, userdata, rc):
         logging.error("Disconnected cerbo successfully.")
     logging.error("Disconnected from cerbo MQTT broker")
 
-
 def cerbo_on_message(client, userdata, msg):
     global ha_mqtt_connected
     global ha_mqtt_client
 
     if ha_mqtt_connected:
-        # Get the topic and payload
         topic = msg.topic
         payload = msg.payload.decode("utf-8")
 
-        # Split the topic into parts by '/'
         topic_parts = topic.split("/")
         if len(topic_parts) < 4:
             return
@@ -134,7 +131,6 @@ def cerbo_on_message(client, userdata, msg):
         module_id = topic_parts[3]
         topic_suffix = "/".join(topic_parts[4:])  # Get the part after the ID
 
-        # Correctly match topic_suffix with READ_PARAMETER_MAP
         for param, details in READ_PARAMETER_MAP.items():
             # Skip updates for unused AC inputs
             if param == "AC Input 1" and not AC_INPUTS.get("input_1", True):
@@ -145,7 +141,7 @@ def cerbo_on_message(client, userdata, msg):
                 continue
 
             expected_suffix = details["topic"]
-            if topic_suffix == expected_suffix and module_type == details["module_type"]:  # Exact match with full topic from victron_map.py
+            if topic_suffix == expected_suffix and module_type == details["module_type"]:  
                 ha_topic = f"{HA_MQTT_BASE_TOPIC}/{CERBO_SERIAL_NO}/{module_type}/{module_id}/{param.replace(' ', '_').lower()}"
                 try:
                     payload_json = json.loads(payload)
