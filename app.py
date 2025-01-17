@@ -140,21 +140,24 @@ def cerbo_on_message(client, userdata, msg):
                     if "value" in payload_json:
                         value = payload_json["value"]
                     else:
-                        value = None  # Handle cases where "value" key is missing
+                        value = None
 
-                    # Specific handling for "AC Input 2 Source"
-                    if param == "AC Input 2 Source" and value is None:
-                        ha_payload = "Not used"
-                    else:
-                        # Map value or use generic fallback
-                        ha_payload = details["map"].get(value, "Unknown") if "map" in details else (round(value, 2) if value is not None else "Unknown")
+                    # Skip publishing if value is None (null)
+                    if value is None:
+                        logging.debug(f"Skipping {ha_topic} because value is null")
+                        return
+
+                    # Map value or process as needed
+                    ha_payload = details["map"].get(value, "Unknown") if "map" in details else round(value, 2)
+
                 except json.JSONDecodeError:
                     ha_payload = "Error - Invalid Payload"  # Handle invalid JSON
-                # Publish to the Home Assistant topic
+                
+                # Publish only if a valid value is present
                 ha_mqtt_client.publish(ha_topic, ha_payload, retain=False)
                 ha_mqtt_client.publish(f"{HA_MQTT_BASE_TOPIC}/{CERBO_SERIAL_NO}/availability", "online")
                 logging.debug(f"Published to {ha_topic}: {ha_payload}")
-                return # Exit once a match is found
+                return
             
         logging.warning(f"No match found for topic_suffix: {topic_suffix}")
     else:
