@@ -1,6 +1,6 @@
 name: "Voyanti Victron Addon"
 description: "Voyanti Victron Addon"
-version: "0.1.77"
+version: "0.1.79"
 slug: "victron"
 url: "https://github.com/octoco-ltd/voyanti-ha-victron"
 init: false
@@ -19,8 +19,8 @@ boot: auto
 options:
   inverter_model: "Quattro 48/10000"
   ac_inputs:
-    - input_1: true
-    - input_2: false
+    input_1: true
+    input_2: false
   cerbo_model: "Cerbo GX"
   ha_mqtt_host: "localhost"
   ha_mqtt_port: 1883
@@ -53,8 +53,8 @@ schema:
   cerbo_serial_no: str
   inverter_model: str
   ac_inputs:
-    - input_1: bool
-    - input_2: bool
+    input_1: bool
+    input_2: bool
   cerbo_model: str
   solarchargers:
     - id: str
