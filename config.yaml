@@ -1,6 +1,6 @@
 name: "Voyanti Victron Addon"
 description: "Voyanti Victron Addon"
-version: "0.1.71"
+version: "0.1.72"
 slug: "victron"
 url: "https://github.com/octoco-ltd/voyanti-ha-victron"
 init: false
@@ -53,8 +53,16 @@ schema:
   cerbo_serial_no: str
   inverter_model: str
   ac_inputs:
-    input_1: bool
-    input_2: bool
+    input_1:
+      type: bool
+      required: true
+      name: "AC Input 1 Enabled"
+      description: "Enable or disable AC Input 1."
+    input_2:
+      type: bool
+      required: true
+      name: "AC Input 2 Enabled"
+      description: "Enable or disable AC Input 2."
   cerbo_model: str
   solarchargers:
     - id: str
