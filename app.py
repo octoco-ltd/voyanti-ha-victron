@@ -114,17 +114,14 @@ def cerbo_on_disconnect(client, userdata, rc):
         logging.error("Disconnected cerbo successfully.")
     logging.error("Disconnected from cerbo MQTT broker")
 
-
 def cerbo_on_message(client, userdata, msg):
     global ha_mqtt_connected
     global ha_mqtt_client
 
     if ha_mqtt_connected:
-        # Get the topic and payload
         topic = msg.topic
         payload = msg.payload.decode("utf-8")
 
-        # Split the topic into parts by '/'
         topic_parts = topic.split("/")
         if len(topic_parts) < 4:
             return
@@ -133,28 +130,33 @@ def cerbo_on_message(client, userdata, msg):
         module_id = topic_parts[3]
         topic_suffix = "/".join(topic_parts[4:])  # Get the part after the ID
 
-        # Correctly match topic_suffix with READ_PARAMETER_MAP
         for param, details in READ_PARAMETER_MAP.items():
             expected_suffix = details["topic"]
-            if topic_suffix == expected_suffix and module_type == details["module_type"]:  # Exact match with full topic from victron_map.py
+            if topic_suffix == expected_suffix and module_type == details["module_type"]:  
                 ha_topic = f"{HA_MQTT_BASE_TOPIC}/{CERBO_SERIAL_NO}/{module_type}/{module_id}/{param.replace(' ', '_').lower()}"
-                payload_json = json.loads(payload)
-                if "map" in details:
-                    ha_payload = details["map"].get(payload_json["value"])
-                else:
-                    ha_payload = round(payload_json["value"], 2)
+
+                try:
+                    payload_json = json.loads(payload)
+                    if "value" in payload_json:
+                        value = payload_json["value"]
+                    else:
+                        value = None  # Handle cases where "value" key is missing
+
+                    # Specific handling for "AC Input 2 Source"
+                    if param == "AC Input 2 Source" and value is None:
+                        ha_payload = "Not used"
+                    else:
+                        # Map value or use generic fallback
+                        ha_payload = details["map"].get(value, "Unknown") if "map" in details else (round(value, 2) if value is not None else "Unknown")
+                except json.JSONDecodeError:
+                    ha_payload = "Error - Invalid Payload"  # Handle invalid JSON
                 # Publish to the Home Assistant topic
                 ha_mqtt_client.publish(ha_topic, ha_payload, retain=False)
                 ha_mqtt_client.publish(f"{HA_MQTT_BASE_TOPIC}/{CERBO_SERIAL_NO}/availability", "online")
                 logging.debug(f"Published to {ha_topic}: {ha_payload}")
-                return  # Exit once a match is found
+                return # Exit once a match is found
             
-        if topic == f"N/{CERBO_SERIAL_NO}/settings/0/Settings/CGwacs/BatteryLife/MinimumSocLimit":
-            payload_json = json.loads(payload)
-            ha_payload = round(payload_json["value"], 2)
-            ha_mqtt_client.publish(f"{HA_MQTT_BASE_TOPIC}/{CERBO_SERIAL_NO}/settings/get/min_soc_limit", ha_payload, retain=False)
-        else:
-            logging.warning(f"No match found for topic_suffix: {topic_suffix}")
+        logging.warning(f"No match found for topic_suffix: {topic_suffix}")
     else:
         logging.info("MQTT not connected ...")
 
