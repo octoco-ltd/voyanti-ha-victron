@@ -60,7 +60,7 @@ READ_PARAMETER_MAP = {
             3: "Three"          
         }
      },
-    "AC Input 0 Source": {
+    "AC Input 1 Source": {
         "topic":  "Ac/In/0/Source",
         "module_type": "system",
         "map": {
@@ -70,7 +70,7 @@ READ_PARAMETER_MAP = {
             3: "Shore"  
         }
      },
-    "AC Input 0": {
+    "AC Input 1": {
         "topic":  "Ac/In/0/Connected",
         "module_type": "system",
         "map": {
@@ -78,7 +78,7 @@ READ_PARAMETER_MAP = {
             1: "Connected"  
         }
      },
-    "AC Input 1 Source": {
+    "AC Input 2 Source": {
         "topic":  "Ac/In/1/Source",
         "module_type": "system",
         "map": {
@@ -88,7 +88,7 @@ READ_PARAMETER_MAP = {
             3: "Shore"  
         }
      },
-    "AC Input 1": {
+    "AC Input 2": {
         "topic":  "Ac/In/1/Connected",
         "module_type": "system",
         "map": {

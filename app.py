@@ -43,6 +43,7 @@ logging.basicConfig(
 
 # Configuration settings
 INVERTER_MODEL = config['inverter_model']
+AC_INPUTS = config['ac_inputs']
 HA_MQTT_BROKER = config['ha_mqtt_host']
 HA_MQTT_PORT = config['ha_mqtt_port']
 HA_MQTT_USER = config['ha_mqtt_user']
@@ -135,24 +136,39 @@ def cerbo_on_message(client, userdata, msg):
 
         # Correctly match topic_suffix with READ_PARAMETER_MAP
         for param, details in READ_PARAMETER_MAP.items():
+            # Skip updates for unused AC inputs
+            if param == "AC Input 1" and not AC_INPUTS.get("input_1", True):
+                logging.debug(f"Skipping update for AC Input 1 as it is not used.")
+                continue
+            if param == "AC Input 2" and not AC_INPUTS.get("input_2", True):
+                logging.debug(f"Skipping update for AC Input 2 as it is not used.")
+                continue
+
             expected_suffix = details["topic"]
             if topic_suffix == expected_suffix and module_type == details["module_type"]:  # Exact match with full topic from victron_map.py
                 ha_topic = f"{HA_MQTT_BASE_TOPIC}/{CERBO_SERIAL_NO}/{module_type}/{module_id}/{param.replace(' ', '_').lower()}"
-                payload_json = json.loads(payload)
-                if "map" in details:
-                    ha_payload = details["map"].get(payload_json["value"])
-                else:
-                    ha_payload = round(payload_json["value"], 2)
-                # Publish to the Home Assistant topic
-                ha_mqtt_client.publish(ha_topic, ha_payload, retain=False)
-                ha_mqtt_client.publish(f"{HA_MQTT_BASE_TOPIC}/{CERBO_SERIAL_NO}/availability", "online")
-                logging.debug(f"Published to {ha_topic}: {ha_payload}")
+                try:
+                    payload_json = json.loads(payload)
+                    if "map" in details:
+                        ha_payload = details["map"].get(payload_json["value"], "Unknown")
+                    else:
+                        ha_payload = round(payload_json["value"], 2)
+                    
+                    # Publish to the Home Assistant topic
+                    ha_mqtt_client.publish(ha_topic, ha_payload, retain=False)
+                    ha_mqtt_client.publish(f"{HA_MQTT_BASE_TOPIC}/{CERBO_SERIAL_NO}/availability", "online")
+                    logging.debug(f"Published to {ha_topic}: {ha_payload}")
+                except json.JSONDecodeError:
+                    logging.error(f"Failed to decode JSON payload for topic: {topic}")
                 return  # Exit once a match is found
             
         if topic == f"N/{CERBO_SERIAL_NO}/settings/0/Settings/CGwacs/BatteryLife/MinimumSocLimit":
-            payload_json = json.loads(payload)
-            ha_payload = round(payload_json["value"], 2)
-            ha_mqtt_client.publish(f"{HA_MQTT_BASE_TOPIC}/{CERBO_SERIAL_NO}/settings/get/min_soc_limit", ha_payload, retain=False)
+            try:
+                payload_json = json.loads(payload)
+                ha_payload = round(payload_json["value"], 2)
+                ha_mqtt_client.publish(f"{HA_MQTT_BASE_TOPIC}/{CERBO_SERIAL_NO}/settings/get/min_soc_limit", ha_payload, retain=False)
+            except json.JSONDecodeError:
+                logging.error(f"Failed to decode JSON payload for MinimumSocLimit.")
         else:
             logging.warning(f"No match found for topic_suffix: {topic_suffix}")
     else:
@@ -262,7 +278,6 @@ def ha_discovery_grid():
 
     ha_mqtt_client.publish(availability_topic, "online")
 
-# HA Discovery Function for Cerbo        
 def ha_discovery_cerbo():
     # Base availability topic
     availability_topic = f"{HA_MQTT_BASE_TOPIC}/{CERBO_SERIAL_NO}/availability"
@@ -278,6 +293,14 @@ def ha_discovery_cerbo():
 
     # Publish discovery messages for existing parameters
     for param, details in READ_PARAMETER_MAP.items():
+        # Skip discovery for unused AC inputs
+        if param == "AC Input 1" and not AC_INPUTS.get("input_1", True):
+            logging.debug("Skipping discovery for AC Input 1 as it is not used.")
+            continue
+        if param == "AC Input 2" and not AC_INPUTS.get("input_2", True):
+            logging.debug("Skipping discovery for AC Input 2 as it is not used.")
+            continue
+
         if details['module_type'] == 'system' or details['module_type'] == 'settings':
             discovery_payload = {
                 "name": f"{param}",

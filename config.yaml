@@ -1,6 +1,6 @@
 name: "Voyanti Victron Addon"
 description: "Voyanti Victron Addon"
-version: "0.1.67"
+version: "0.1.71"
 slug: "victron"
 url: "https://github.com/octoco-ltd/voyanti-ha-victron"
 init: false
@@ -18,6 +18,9 @@ boot: auto
 
 options:
   inverter_model: "Quattro 48/10000"
+  ac_inputs:
+    input_1: true
+    input_2: false
   cerbo_model: "Cerbo GX"
   ha_mqtt_host: "localhost"
   ha_mqtt_port: 1883
@@ -37,6 +40,7 @@ options:
       name: "Grid Meter"
       model: "ET340"
   debug: 2
+
 schema:
   ha_mqtt_host: str
   ha_mqtt_port: int
@@ -48,6 +52,9 @@ schema:
   cerbo_mqtt_password: password?
   cerbo_serial_no: str
   inverter_model: str
+  ac_inputs:
+    input_1: bool
+    input_2: bool
   cerbo_model: str
   solarchargers:
     - id: str
@@ -58,4 +65,3 @@ schema:
       name: str
       model: str
   DEBUG: int(0,5)
-      
