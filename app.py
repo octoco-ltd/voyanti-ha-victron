@@ -291,15 +291,15 @@ def ha_discovery_cerbo():
     for param, details in READ_PARAMETER_MAP.items():
         logging.debug(f"Processing parameter: {param}")
 
-        # Skip discovery for unused AC inputs
-        if param == "AC Input 1" and not AC_INPUTS.get("input_1", True):
-            logging.debug(f"Skipping discovery for {param} as it is not used.")
+        # Skip discovery for unused AC inputs and their sources
+        if (param == "AC Input 1" or param == "AC Input 1 Source") and not AC_INPUTS.get("input_1", True):
+            logging.debug(f"Skipping discovery for {param} as AC Input 1 is disabled.")
             continue
-        if param == "AC Input 2" and not AC_INPUTS.get("input_2", True):
-            logging.debug(f"Skipping discovery for {param} as it is not used.")
+        if (param == "AC Input 2" or param == "AC Input 2 Source") and not AC_INPUTS.get("input_2", True):
+            logging.debug(f"Skipping discovery for {param} as AC Input 2 is disabled.")
             continue
 
-        # Publish discovery messages
+        # Continue with discovery for other parameters
         if details['module_type'] == 'system' or details['module_type'] == 'settings':
             discovery_payload = {
                 "name": f"{param}",
@@ -315,6 +315,9 @@ def ha_discovery_cerbo():
             logging.debug(f"Publishing discovery topic: {discovery_topic}")
             logging.debug(f"Discovery payload: {json.dumps(discovery_payload)}")
             ha_mqtt_client.publish(discovery_topic, json.dumps(discovery_payload), retain=True)
+
+    # Publish online availability
+    ha_mqtt_client.publish(availability_topic, "online")
 
     # Add `min_soc_limit` as a number entity
     min_soc_limit_payload = {
