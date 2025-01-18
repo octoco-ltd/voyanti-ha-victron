@@ -289,14 +289,17 @@ def ha_discovery_cerbo():
 
     # Publish discovery messages for existing parameters
     for param, details in READ_PARAMETER_MAP.items():
+        logging.debug(f"Processing parameter: {param}")
+
         # Skip discovery for unused AC inputs
         if param == "AC Input 1" and not AC_INPUTS.get("input_1", True):
-            logging.debug("Skipping discovery for AC Input 1 as it is not used.")
+            logging.debug(f"Skipping discovery for {param} as it is not used.")
             continue
         if param == "AC Input 2" and not AC_INPUTS.get("input_2", True):
-            logging.debug("Skipping discovery for AC Input 2 as it is not used.")
+            logging.debug(f"Skipping discovery for {param} as it is not used.")
             continue
 
+        # Publish discovery messages
         if details['module_type'] == 'system' or details['module_type'] == 'settings':
             discovery_payload = {
                 "name": f"{param}",
@@ -308,13 +311,9 @@ def ha_discovery_cerbo():
                 "state_class": details.get("state_class"),
                 "unit_of_measurement": details.get("unit"),
             }
-            if "device_class" in details:
-                discovery_payload["device_class"] = details.get("device_class")
-            if "state_class" in details:
-                discovery_payload["state_class"] = details.get("state_class")
-            if "unit_of_measurement" in details:
-                discovery_payload["unit_of_measurement"] = details.get("unit")
             discovery_topic = f"{HA_MQTT_DISCOVERY_TOPIC}/sensor/victron_{CERBO_SERIAL_NO}/cerbo_{param.replace(' ', '_').lower()}/config"
+            logging.debug(f"Publishing discovery topic: {discovery_topic}")
+            logging.debug(f"Discovery payload: {json.dumps(discovery_payload)}")
             ha_mqtt_client.publish(discovery_topic, json.dumps(discovery_payload), retain=True)
 
     # Add `min_soc_limit` as a number entity
